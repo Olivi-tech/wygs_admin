@@ -1,0 +1,8 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="chart-bar">
+<rect id="Rectangle" x="2.5" y="10" width="5" height="6.66667" rx="1" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<rect id="Rectangle_2" x="7.5" y="6.66669" width="5" height="10" rx="1" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<rect id="Rectangle_3" x="12.5" y="3.33334" width="5" height="13.3333" rx="1" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Path" d="M3.33325 16.6667H14.9999" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>
