@@ -12,6 +12,7 @@ class CustomText extends StatelessWidget {
   final double? letterSpacing;
   const CustomText(
       {super.key,
+
       required this.text,
       this.size,
       this.color,
@@ -20,7 +21,7 @@ class CustomText extends StatelessWidget {
       this.textAlign,
       this.fontWeight,
       this.height,
-      this.letterSpacing});
+      this.letterSpacing, });
 
   @override
   Widget build(BuildContext context) {

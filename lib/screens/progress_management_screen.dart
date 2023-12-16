@@ -4,7 +4,7 @@ import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 
 class ProgressManagementScreen extends StatelessWidget {
-  const ProgressManagementScreen({Key? key});
+  const ProgressManagementScreen({super.key, Key? ey});
 
   @override
   Widget build(BuildContext context) {
@@ -105,177 +105,181 @@ class ProgressManagementScreen extends StatelessWidget {
               border: Border.all(color: AppColor.black),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: DataTable(
-              columns: [
-                DataColumn(
-                  label: Row(
-                    children: [
-                      Container(
-                        height: 18,
-                        width: 18,
-                        decoration: BoxDecoration(
-                          color: AppColor.lightWhite,
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: AppColor.blackish.withOpacity(0.7)),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: MediaQuery.of(context).size.width * .067,
+                columns: [
+                  DataColumn(
+                    label: Row(
+                      children: [
+                        Container(
+                          height: 18,
+                          width: 18,
+                          decoration: BoxDecoration(
+                            color: AppColor.lightWhite,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                color: AppColor.blackish.withOpacity(0.7)),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      const CustomText(
-                        text: 'Name',
-                        color: AppColor.lightBlack,
-                        size: AppSize.small,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ],
-                  ),
-                ),
-                const DataColumn(
-                  label: CustomText(
-                    text: 'Email ID',
-                    color: AppColor.lightBlack,
-                    size: AppSize.small,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const DataColumn(
-                  label: Flexible(
-                    child: CustomText(
-                      text: 'Joining Date',
-                      color: AppColor.lightBlack,
-                      size: AppSize.small,
-                      fontWeight: FontWeight.w400,
+                        const SizedBox(width: 10),
+                        const CustomText(
+                          text: 'Name',
+                          color: AppColor.lightBlack,
+                          size: AppSize.small,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                const DataColumn(
-                  label: CustomText(
-                    text: 'Last Login',
-                    color: AppColor.lightBlack,
-                    size: AppSize.small,
-                    fontWeight: FontWeight.w500,
+                  const DataColumn(
+                    label: CustomText(
+                      text: 'Email ID',
+                      color: AppColor.lightBlack,
+                      size: AppSize.small,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const DataColumn(
-                  label: CustomText(
-                    text: 'Progress',
-                    color: AppColor.lightBlack,
-                    size: AppSize.small,
-                    fontWeight: FontWeight.w500,
+                  const DataColumn(
+                    label: Flexible(
+                      child: CustomText(
+                        text: 'Joining Date',
+                        color: AppColor.lightBlack,
+                        size: AppSize.small,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
-                ),
-                const DataColumn(
-                  label: CustomText(
-                    text: 'Status',
-                    color: AppColor.lightBlack,
-                    size: AppSize.small,
-                    fontWeight: FontWeight.w500,
+                  const DataColumn(
+                    label: CustomText(
+                      text: 'Last Login',
+                      color: AppColor.lightBlack,
+                      size: AppSize.small,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
-              rows: List.generate(
-                names.length,
-                (index) => DataRow(
-                  cells: [
-                    DataCell(
-                      Row(
-                        children: [
-                          Container(
-                            height: 18,
-                            width: 18,
-                            decoration: BoxDecoration(
-                              color: AppColor.lightWhite,
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  color: AppColor.blackish.withOpacity(0.7)),
+                  const DataColumn(
+                    label: CustomText(
+                      text: 'Progress',
+                      color: AppColor.lightBlack,
+                      size: AppSize.small,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const DataColumn(
+                    label: CustomText(
+                      text: 'Status',
+                      color: AppColor.lightBlack,
+                      size: AppSize.small,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+                rows: List.generate(
+                  names.length,
+                  (index) => DataRow(
+                    cells: [
+                      DataCell(
+                        Row(
+                          children: [
+                            Container(
+                              height: 18,
+                              width: 18,
+                              decoration: BoxDecoration(
+                                color: AppColor.lightWhite,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                    color: AppColor.blackish.withOpacity(0.7)),
+                              ),
                             ),
+                            const SizedBox(width: 10),
+                            CustomContainer(
+                              decoration: BoxDecoration(
+                                color: getNameColor(index),
+                                borderRadius: BorderRadius.circular(36),
+                              ),
+                              height: 25,
+                              width: 25,
+                              child: Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: SvgPicture.asset(AppSvgs.userBold),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: CustomText(
+                                text: names[index],
+                                color: AppColor.lightBlack.withOpacity(0.9),
+                                size: AppSize.xsmall,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DataCell(
+                        CustomText(
+                          text: 'username@email.com',
+                          color: AppColor.lightBlack.withOpacity(0.9),
+                          size: AppSize.xsmall,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      DataCell(
+                        CustomText(
+                          text: '22/08/2023',
+                          color: AppColor.lightBlack.withOpacity(0.9),
+                          size: AppSize.xsmall,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      DataCell(
+                        CustomText(
+                          text: '15/04/2023',
+                          color: AppColor.lightBlack.withOpacity(0.9),
+                          size: AppSize.xsmall,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      DataCell(
+                        CustomContainer(
+                          decoration: BoxDecoration(
+                            color: AppColor.skyBlue,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          const SizedBox(width: 10),
-                          CustomContainer(
-                            decoration: BoxDecoration(
-                              color: getNameColor(index),
-                              borderRadius: BorderRadius.circular(36),
-                            ),
-                            height: 25,
-                            width: 25,
-                            child: Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: SvgPicture.asset(AppSvgs.userBold),
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          Flexible(
+                          height: 23,
+                          width: 50,
+                          child: Center(
                             child: CustomText(
-                              text: names[index],
+                              text: progressRate[index],
                               color: AppColor.lightBlack.withOpacity(0.9),
                               size: AppSize.xsmall,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    DataCell(
-                      CustomText(
-                        text: 'username@email.com',
-                        color: AppColor.lightBlack.withOpacity(0.9),
-                        size: AppSize.xsmall,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    DataCell(
-                      CustomText(
-                        text: '22/08/2023',
-                        color: AppColor.lightBlack.withOpacity(0.9),
-                        size: AppSize.xsmall,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    DataCell(
-                      CustomText(
-                        text: '15/04/2023',
-                        color: AppColor.lightBlack.withOpacity(0.9),
-                        size: AppSize.xsmall,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    DataCell(
-                      CustomContainer(
-                        decoration: BoxDecoration(
-                          color: AppColor.skyBlue,
-                          borderRadius: BorderRadius.circular(12),
                         ),
-                        height: 23,
-                        width: 50,
-                        child: Center(
-                          child: CustomText(
-                            text: progressRate[index],
-                            color: AppColor.lightBlack.withOpacity(0.9),
-                            size: AppSize.xsmall,
-                            fontWeight: FontWeight.w400,
+                      ),
+                      DataCell(
+                        CustomContainer(
+                          decoration: BoxDecoration(
+                            color: getStatusColor(status[index]),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          height: 23,
+                          width: 77,
+                          child: Center(
+                            child: CustomText(
+                              text: status[index],
+                              color: AppColor.white,
+                              size: AppSize.xsmall,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    DataCell(
-                      CustomContainer(
-                        decoration: BoxDecoration(
-                          color: getStatusColor(status[index]),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        height: 23,
-                        width: 77,
-                        child: Center(
-                          child: CustomText(
-                            text: status[index],
-                            color: AppColor.white,
-                            size: AppSize.xsmall,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "166719206090",
+    "project_id": "wygs-app",
+    "storage_bucket": "wygs-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166719206090:android:48ba962a7ffd5068d17a33",
+        "android_client_info": {
+          "package_name": "wygs.com.wygs.guitar_songs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiZYH3jD52SsZinfQ2oTOq4JDLoIasAKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

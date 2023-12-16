@@ -7,27 +7,35 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final void Function(String)? onChanged;
   final TextInputType? keyBoardType;
-  final Color cursorColor;
   final Color fillColor;
+  final FormFieldValidator? validator;
   final TextStyle? hintStyle;
   final TextStyle? suffixStyle;
-  const CustomTextField(
-      {super.key,
-      this.controller,
-      required this.hintText,
-      this.onChanged,
-      this.keyBoardType,
-      this.prefixIcon,
-      required this.fillColor,
-      this.hintStyle,
-      this.suffixStyle,
-      required this.cursorColor});
+  final bool isVisibleText;
+
+  const CustomTextField({
+    super.key,
+    this.controller,
+    required this.hintText,
+    this.onChanged,
+    this.validator,
+    this.keyBoardType,
+    this.prefixIcon,
+    required this.fillColor,
+    this.hintStyle,
+    this.suffixStyle,
+    this.isVisibleText = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: validator,
       controller: controller,
       onChanged: onChanged,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      obscureText: isVisibleText,
+      cursorColor: AppColor.blue,
       decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: prefixIcon,

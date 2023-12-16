@@ -94,160 +94,164 @@ class BillingManagementScreen extends StatelessWidget {
               border: Border.all(color: AppColor.black),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: DataTable(
-                columns: [
-                  DataColumn(
-                      label: Row(
-                    children: [
-                      Container(
-                        height: 18,
-                        width: 18,
-                        decoration: BoxDecoration(
-                          color: AppColor.lightWhite,
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: AppColor.blackish.withOpacity(0.9)),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                  columnSpacing: MediaQuery.of(context).size.width * .073,
+                  columns: [
+                    DataColumn(
+                        label: Row(
+                      children: [
+                        Container(
+                          height: 18,
+                          width: 18,
+                          decoration: BoxDecoration(
+                            color: AppColor.lightWhite,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                color: AppColor.blackish.withOpacity(0.9)),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const CustomText(
+                          text: 'Invoice ID',
+                          color: AppColor.lightBlack,
+                          size: AppSize.small,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ],
+                    )),
+                    const DataColumn(
+                      label: Expanded(
+                        child: CustomText(
+                          text: 'Name',
+                          color: AppColor.lightBlack,
+                          size: AppSize.small,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      const CustomText(
-                        text: 'Invoice ID',
-                        color: AppColor.lightBlack,
-                        size: AppSize.small,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ],
-                  )),
-                  const DataColumn(
-                    label: Expanded(
-                      child: CustomText(
-                        text: 'Name',
-                        color: AppColor.lightBlack,
-                        size: AppSize.small,
-                        fontWeight: FontWeight.w500,
+                    ),
+                    const DataColumn(
+                      label: Expanded(
+                        child: CustomText(
+                          text: 'Subcription Plan',
+                          color: AppColor.lightBlack,
+                          size: AppSize.small,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                  const DataColumn(
-                    label: Expanded(
-                      child: CustomText(
-                        text: 'Subcription Plan',
-                        color: AppColor.lightBlack,
-                        size: AppSize.small,
-                        fontWeight: FontWeight.w500,
+                    const DataColumn(
+                      label: Expanded(
+                        child: CustomText(
+                          text: 'Type',
+                          color: AppColor.lightBlack,
+                          size: AppSize.small,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                  const DataColumn(
-                    label: Expanded(
-                      child: CustomText(
-                        text: 'Type',
-                        color: AppColor.lightBlack,
-                        size: AppSize.small,
-                        fontWeight: FontWeight.w500,
+                    const DataColumn(
+                      label: Expanded(
+                        child: CustomText(
+                          text: 'Price',
+                          color: AppColor.lightBlack,
+                          size: AppSize.small,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                  const DataColumn(
-                    label: Expanded(
-                      child: CustomText(
-                        text: 'Price',
-                        color: AppColor.lightBlack,
-                        size: AppSize.small,
-                        fontWeight: FontWeight.w500,
+                    const DataColumn(
+                      label: Expanded(
+                        child: CustomText(
+                          text: 'Status',
+                          color: AppColor.lightBlack,
+                          size: AppSize.small,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                  const DataColumn(
-                    label: Expanded(
-                      child: CustomText(
-                        text: 'Status',
-                        color: AppColor.lightBlack,
-                        size: AppSize.small,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-                rows: List.generate(
-                    names.length,
-                    (index) => DataRow(cells: [
-                          DataCell(
-                            Row(
-                              children: [
-                                Container(
-                                  height: 18,
-                                  width: 18,
-                                  decoration: BoxDecoration(
-                                    color: AppColor.lightWhite,
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(
-                                        color:
-                                            AppColor.blackish.withOpacity(0.7)),
+                  ],
+                  rows: List.generate(
+                      names.length,
+                      (index) => DataRow(cells: [
+                            DataCell(
+                              Row(
+                                children: [
+                                  Container(
+                                    height: 18,
+                                    width: 18,
+                                    decoration: BoxDecoration(
+                                      color: AppColor.lightWhite,
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          color: AppColor.blackish
+                                              .withOpacity(0.7)),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  CustomText(
+                                    text: 'IN-2022-23345',
+                                    color: AppColor.lightBlack.withOpacity(0.9),
+                                    size: AppSize.xsmall,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: names[index],
+                                color: AppColor.lightBlack.withOpacity(0.9),
+                                size: AppSize.xsmall,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: subscriptionPlan[index],
+                                color: AppColor.lightBlack.withOpacity(0.9),
+                                size: AppSize.xsmall,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: paymentType[index],
+                                color: const Color.fromARGB(255, 72, 50, 67)
+                                    .withOpacity(0.9),
+                                size: AppSize.xsmall,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: price[index],
+                                color: AppColor.lightBlack.withOpacity(0.9),
+                                size: AppSize.xsmall,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            DataCell(
+                              CustomContainer(
+                                decoration: BoxDecoration(
+                                  color: getStatusColor(status[index]),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                height: 23,
+                                width: 77,
+                                child: Center(
+                                  child: CustomText(
+                                    text: status[index],
+                                    color: AppColor.white,
+                                    size: AppSize.xsmall,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                CustomText(
-                                  text: 'IN-2022-23345',
-                                  color: AppColor.lightBlack.withOpacity(0.9),
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ],
-                            ),
-                          ),
-                          DataCell(
-                            CustomText(
-                              text: names[index],
-                              color: AppColor.lightBlack.withOpacity(0.9),
-                              size: AppSize.xsmall,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          DataCell(
-                            CustomText(
-                              text: subscriptionPlan[index],
-                              color: AppColor.lightBlack.withOpacity(0.9),
-                              size: AppSize.xsmall,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          DataCell(
-                            CustomText(
-                              text: paymentType[index],
-                              color: const Color.fromARGB(255, 72, 50, 67)
-                                  .withOpacity(0.9),
-                              size: AppSize.xsmall,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          DataCell(
-                            CustomText(
-                              text: price[index],
-                              color: AppColor.lightBlack.withOpacity(0.9),
-                              size: AppSize.xsmall,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          DataCell(
-                            CustomContainer(
-                              decoration: BoxDecoration(
-                                color: getStatusColor(status[index]),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              height: 23,
-                              width: 77,
-                              child: Center(
-                                child: CustomText(
-                                  text: status[index],
-                                  color: AppColor.white,
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
                               ),
                             ),
-                          ),
-                        ]))),
+                          ]))),
+            ),
           ),
         )
       ],

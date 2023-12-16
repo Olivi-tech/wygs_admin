@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_songs/constants/constants.dart';
+import 'package:guitar_songs/provider/screen_transition_provider.dart';
 import 'package:guitar_songs/screens/screens.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  HomeScreen({Key? key}) : super(key: key);
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   bool isDrawerVisible = true;
 
   @override
@@ -94,7 +90,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     CustomSize(height: height * 0.05),
-                    const SettingScreen()
+                    Consumer<ScreenTransitionProvider>(
+                        builder: (context, providerIndex, child) {
+                      return providerIndex.getIndex == 0
+                          ? const ProgressManagementScreen()
+                          : providerIndex.getIndex == 1
+                              ? const CommunityManagementScreen()
+                              : providerIndex.getIndex == 2
+                                  ? const GuestManagementScreen()
+                                  : providerIndex.getIndex == 3
+                                      ? const BillingManagementScreen()
+                                      : const SettingScreen();
+                    })
                   ],
                 ),
               ),
