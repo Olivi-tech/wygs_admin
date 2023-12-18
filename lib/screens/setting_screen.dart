@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/auth_services.dart';
+import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/text_form_field.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 
@@ -22,8 +23,15 @@ class _SettingScreenState extends State<SettingScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  late Future<QuerySnapshot<Map<String, dynamic>>> currentData;
   Future<QuerySnapshot<Map<String, dynamic>>> getData() async {
     return await FirebaseFirestore.instance.collection('adminDetails').get();
+  }
+
+  @override
+  void initState() {
+    currentData = getData();
+    super.initState();
   }
 
   @override
@@ -170,13 +178,13 @@ class _SettingScreenState extends State<SettingScreen> {
                               width: width * 0.23,
                               child: FutureBuilder<
                                   QuerySnapshot<Map<String, dynamic>>>(
-                                future: getData(),
+                                future: currentData,
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     var data = snapshot.data!.docs;
                                     return CustomTextFormField(
                                       controller: emailController,
-                                      hintText: data.first['email'],
+                                      hintText: data.first['email'] ?? '',
                                       fillColor: AppColor.white,
                                       validator: (email) {
                                         if (email != null &&
@@ -200,13 +208,13 @@ class _SettingScreenState extends State<SettingScreen> {
                               width: width * 0.23,
                               child: FutureBuilder<
                                   QuerySnapshot<Map<String, dynamic>>>(
-                                future: getData(),
+                                future: currentData,
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     var data = snapshot.data!.docs;
                                     return CustomTextFormField(
                                       keyBoardType: TextInputType.name,
-                                      hintText: data.first['username'],
+                                      hintText: data.first['username'] ?? '',
                                       controller: usernameController,
                                       fillColor: AppColor.white,
                                       validator: (value) {
@@ -258,13 +266,13 @@ class _SettingScreenState extends State<SettingScreen> {
                               width: width * 0.23,
                               child: FutureBuilder<
                                   QuerySnapshot<Map<String, dynamic>>>(
-                                future: getData(),
+                                future: currentData,
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     var data = snapshot.data!.docs;
                                     return CustomTextFormField(
                                       keyBoardType: TextInputType.name,
-                                      hintText: data.first['firstName'],
+                                      hintText: data.first['firstName'] ?? '',
                                       controller: firstNameController,
                                       fillColor: AppColor.white,
                                       validator: (value) {
@@ -289,13 +297,13 @@ class _SettingScreenState extends State<SettingScreen> {
                               width: width * 0.23,
                               child: FutureBuilder<
                                   QuerySnapshot<Map<String, dynamic>>>(
-                                future: getData(),
+                                future: currentData,
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     var data = snapshot.data!.docs;
                                     return CustomTextFormField(
                                       keyBoardType: TextInputType.name,
-                                      hintText: data.first['lastName'],
+                                      hintText: data.first['lastName'] ?? '',
                                       controller: lastNameController,
                                       fillColor: AppColor.white,
                                       validator: (value) {
@@ -346,14 +354,14 @@ class _SettingScreenState extends State<SettingScreen> {
                               height: height * 0.1,
                               child: FutureBuilder<
                                   QuerySnapshot<Map<String, dynamic>>>(
-                                future: getData(),
+                                future: currentData,
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     var data = snapshot.data!.docs;
                                     return CustomTextFormField(
                                       keyBoardType: TextInputType.phone,
-                                      controller: addressController,
-                                      hintText: data.first['address'],
+                                      controller: phoneController,
+                                      hintText: data.first['phoneNo'] ?? '',
                                       fillColor: AppColor.white,
                                       validator: (value) {
                                         bool phoneValid = RegExp(
@@ -381,18 +389,17 @@ class _SettingScreenState extends State<SettingScreen> {
                               height: height * 0.1,
                               child: FutureBuilder<
                                   QuerySnapshot<Map<String, dynamic>>>(
-                                future: getData(),
+                                future: currentData,
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     var data = snapshot.data!.docs;
                                     return CustomTextFormField(
-                                      keyBoardType: TextInputType.name,
-                                      hintText: data.first['lastName'],
+                                      hintText: data.first['address'] ?? '',
                                       controller: addressController,
                                       fillColor: AppColor.white,
                                       validator: (value) {
                                         if (value.isEmpty) {
-                                          return 'Enter correct name';
+                                          return 'Enter correct address';
                                         } else {
                                           return null;
                                         }
@@ -421,8 +428,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
                                 backgroundColor: AppColor.blue),
-                            onPressed: () {
+                            onPressed: () async {
                               if (formField.currentState!.validate()) {
+                                Utlis().toastMessage('Saved Successfully');
                                 AuthServices.adminData(
                                     email: emailController.text,
                                     controller: emailController,
@@ -432,6 +440,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     phoneNo: phoneController.text,
                                     address: addressController.text);
                               }
+                              setState(() {});
                             },
                             child: const Text(
                               'SAVE CHANGES',

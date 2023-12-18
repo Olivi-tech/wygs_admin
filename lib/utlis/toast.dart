@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:guitar_songs/constants/colors.dart';
+import 'package:guitar_songs/constants/constants.dart';
 
-class Utils {
+class Utlis {
   void toastMessage(String message) {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.blue,
-        textColor: AppColor.lightRed,
+        gravity: ToastGravity.BOTTOM_RIGHT,
+        webBgColor: "4683C4",
+        textColor: AppColor.white,
         fontSize: 16.0);
   }
 }

@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:guitar_songs/utlis/app_routes.dart';
-import 'package:guitar_songs/utlis/toast.dart';
+import 'package:guitar_songs/utlis/utlis.dart';
 
 class AuthServices {
   static Future<void> login(
@@ -18,7 +17,7 @@ class AuthServices {
         print('Not Login');
       }
     }).onError((error, stackTrace) {
-      Utils().toastMessage(error.toString());
+      Utlis().toastMessage(error.toString());
     });
   }
 
@@ -26,7 +25,6 @@ class AuthServices {
     required String email,
     required TextEditingController controller,
     required String password,
- 
   }) async {
     try {
       DocumentReference users =
@@ -40,30 +38,29 @@ class AuthServices {
     }
   }
 
-static Future<void> adminData({
+  static Future<void> adminData({
     required String email,
     required TextEditingController controller,
     required String username,
- required String lastName,
- required String firstName,
- required String phoneNo,
- required String address,
+    required String lastName,
+    required String firstName,
+    required String phoneNo,
+    required String address,
   }) async {
     try {
-      DocumentReference users =
-          FirebaseFirestore.instance.collection('adminDetails').doc(controller.text);
+      DocumentReference users = FirebaseFirestore.instance
+          .collection('adminDetails')
+          .doc(controller.text);
       await users.set({
         'email': email,
-        'username':username,
-        'firstName':firstName,
-        'lastName':lastName,
-        'phoneNo':phoneNo,
-        'address':address
-      
+        'username': username,
+        'firstName': firstName,
+        'lastName': lastName,
+        'phoneNo': phoneNo,
+        'address': address
       });
     } catch (e) {
       print('Error : ${e.toString()}');
     }
   }
-
 }

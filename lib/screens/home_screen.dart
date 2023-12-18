@@ -5,6 +5,7 @@ import 'package:guitar_songs/screens/screens.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
 

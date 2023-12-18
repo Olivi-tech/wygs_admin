@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guitar_songs/constants/constants.dart';
@@ -149,7 +150,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 CustomSize(height: height * 0.15),
                 InkWell(
                   onTap: () {
-                    Navigator.pop(context);
+                  FirebaseAuth.instance.signOut();
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,
