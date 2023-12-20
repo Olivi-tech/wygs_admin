@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:guitar_songs/model/model.dart';
 import 'package:guitar_songs/utlis/utlis.dart';
+import 'dart:developer';  
 
 class AuthServices {
   static Future<void> login(
@@ -12,55 +14,60 @@ class AuthServices {
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       if (FirebaseAuth.instance.currentUser != null) {
-        Navigator.of(context).pushNamed(AppRoutes.progressManagement);
+        Utlis().toastMessage('Successfully SignIn');
+        Future.delayed(const Duration(milliseconds: 500))
+            .then((value) => Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.progressManagement,
+                  (route) => false,
+                ));
       } else {
-        print('Not Login');
+        log('Not Login');
       }
     }).onError((error, stackTrace) {
-      Utlis().toastMessage(error.toString());
+      Utlis().toastMessage('Error');
     });
   }
 
-  static Future<void> admin({
-    required String email,
-    required TextEditingController controller,
-    required String password,
-  }) async {
-    try {
-      DocumentReference users =
-          FirebaseFirestore.instance.collection('admin').doc(controller.text);
-      await users.set({
-        'email': email,
-        'password': password,
-      });
-    } catch (e) {
-      print('Error : ${e.toString()}');
-    }
-  }
-
-  static Future<void> adminData({
-    required String email,
-    required TextEditingController controller,
-    required String username,
-    required String lastName,
-    required String firstName,
-    required String phoneNo,
-    required String address,
-  }) async {
+  static Future<void> storeAdminDetails(
+      {required AdminModel adminModel}) async {
     try {
       DocumentReference users = FirebaseFirestore.instance
           .collection('adminDetails')
-          .doc(controller.text);
-      await users.set({
-        'email': email,
-        'username': username,
-        'firstName': firstName,
-        'lastName': lastName,
-        'phoneNo': phoneNo,
-        'address': address
-      });
+          .doc(adminModel.userName);
+      await users.set(adminModel.toMap());
     } catch (e) {
-      print('Error : ${e.toString()}');
+      log('Error : ${e.toString()}');
     }
+  }
+
+  static Future<AdminModel?> fetchAdminDetails() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('adminDetails')
+        .orderBy('user_name', descending: false)
+        .limit(1)
+        .get();
+    Map<String, dynamic> mapData = querySnapshot.docs.first.data();
+    return AdminModel.fromMap(mapData);
+  }
+
+
+
+  static Future<void> storeAdminData(
+      {required String email, required controller}) async {
+    try {
+      DocumentReference users =
+          FirebaseFirestore.instance.collection('adminData').doc(controller);
+      await users.set({'email': email});
+    } catch (e) {
+      log('Error : ${e.toString()}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchAdminData() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('adminData').get();
+    Map<String, dynamic> mapData = querySnapshot.docs.first.data();
+    return mapData;
   }
 }

@@ -10,23 +10,26 @@ class CustomText extends StatelessWidget {
   final FontWeight? fontWeight;
   final double? height;
   final double? letterSpacing;
-  const CustomText(
-      {super.key,
-
-      required this.text,
-      this.size,
-      this.color,
-      this.textOverflow,
-      this.maxLine,
-      this.textAlign,
-      this.fontWeight,
-      this.height,
-      this.letterSpacing, });
+  final bool softWrap;
+  const CustomText({
+    super.key,
+    this.softWrap = false,
+    required this.text,
+    this.size,
+    this.color,
+    this.textOverflow,
+    this.maxLine,
+    this.textAlign,
+    this.fontWeight,
+    this.height,
+    this.letterSpacing,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      softWrap: softWrap,
       style: TextStyle(
           fontSize: size,
           color: color,

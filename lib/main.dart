@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:guitar_songs/provider/screen_transition_provider.dart';
+import 'package:guitar_songs/providers/providers.dart';
 import 'package:guitar_songs/route_controller/routes.dart';
 import 'package:guitar_songs/screens/screens.dart';
 import 'package:provider/provider.dart';
@@ -29,13 +29,24 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider<ScreenTransitionProvider>(
             create: (context) => ScreenTransitionProvider(),
-          )
+          ),
+          ChangeNotifierProvider<ProgressCheckProvider>(
+            create: (context) => ProgressCheckProvider(),
+          ),
+          ChangeNotifierProvider<CommunityCheckProvider>(
+            create: (context) => CommunityCheckProvider(),
+          ),
+          ChangeNotifierProvider<GuestCheckProvider>(
+            create: (context) => GuestCheckProvider(),
+          ),
+          ChangeNotifierProvider<BillingCheckProvider>(
+            create: (context) => BillingCheckProvider(),
+          ),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             onGenerateRoute: onGenerateRoute,
-          
-            home: HomeScreen()));
+            home: SignInScreen()));
   }
 }

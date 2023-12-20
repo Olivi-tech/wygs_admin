@@ -12,7 +12,7 @@ class AppSvgs {
 
 class AppImages {
   static const guitarLogo = 'assets/images/guitar_logo.png';
-  static const communityImage = 'assets/images/community_image.png';
-  static const rainbowImage = 'assets/images/rainbow_image.jpeg';
+  static const community = 'assets/images/community.png';
+  static const rainbow = 'assets/images/rainbow.jpeg';
   static const person = 'assets/images/person.png';
 }

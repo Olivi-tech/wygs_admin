@@ -10,6 +10,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyBoardType;
   final Color fillColor;
   final TextStyle? hintStyle;
+  final bool readOnly;
   final TextStyle? suffixStyle;
   const CustomTextFormField({
     super.key,
@@ -22,12 +23,14 @@ class CustomTextFormField extends StatelessWidget {
     this.hintStyle,
     this.suffixStyle,
     this.validator,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      readOnly: readOnly,
       cursorColor: AppColor.blue,
       onChanged: onChanged,
       validator: validator,

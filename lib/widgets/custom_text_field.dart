@@ -3,7 +3,7 @@ import 'package:guitar_songs/constants/constants.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
-  final Widget? prefixIcon;
+  final Widget? suffixIcon;
   final String hintText;
   final void Function(String)? onChanged;
   final TextInputType? keyBoardType;
@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final FormFieldValidator? validator;
   final TextStyle? hintStyle;
   final TextStyle? suffixStyle;
+
   final bool isVisibleText;
 
   const CustomTextField({
@@ -20,7 +21,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.validator,
     this.keyBoardType,
-    this.prefixIcon,
+    this.suffixIcon,
     required this.fillColor,
     this.hintStyle,
     this.suffixStyle,
@@ -37,8 +38,9 @@ class CustomTextField extends StatelessWidget {
       obscureText: isVisibleText,
       cursorColor: AppColor.blue,
       decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 7, left: 10),
           hintText: hintText,
-          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(color: AppColor.white)),

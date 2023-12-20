@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guitar_songs/clippers/sign_in_clipper.dart';
 import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/db_services.dart';
-import 'package:guitar_songs/utlis/passwors_validator.dart';
+import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -15,13 +15,22 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController emailController = TextEditingController();
+  late TextEditingController emailController;
   TextEditingController passWordController = TextEditingController();
   GlobalKey<FormState> formField = GlobalKey<FormState>();
+  late ValueNotifier<bool> passwordVisibility;
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordVisibility = ValueNotifier<bool>(true);
+    super.initState();
+  }
+
   @override
   void dispose() {
     emailController.dispose();
     passWordController.dispose();
+    passwordVisibility.dispose();
     super.dispose();
   }
 
@@ -69,24 +78,24 @@ class _SignInScreenState extends State<SignInScreen> {
                         height: height * 0.3,
                         child: Image.asset(AppImages.guitarLogo),
                       ),
-                      CustomSize(height: height * 0.02),
+                                      SizedBox(height: height * 0.02),
                       const CustomText(
                         text: 'Sign in',
-                        color: AppColor.fullBlack,
+                        color: AppColor.black,
                         size: 36,
                         fontWeight: FontWeight.w700,
                       ),
-                      CustomSize(height: height * 0.015),
+                                      SizedBox(height: height * 0.015),
                       const FittedBox(
                         child: CustomText(
                           text:
-                              'Enter registered email id below to get the magic \nlink for sign in.',
-                          color: AppColor.fullBlack,
+                              'Enter registered email id below to get \nthe magic link for sign in.',
+                          color: AppColor.black,
                           size: AppSize.xmeddium,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      CustomSize(height: height * 0.03),
+                                      SizedBox(height: height * 0.03),
                       SizedBox(
                           height: height * 0.1,
                           width: width * 0.28,
@@ -104,16 +113,30 @@ class _SignInScreenState extends State<SignInScreen> {
                               return null;
                             },
                           )),
-                      CustomSize(height: height * 0.03),
+                                      SizedBox(height: height * 0.03),
                       SizedBox(
-                          height: height * 0.1,
-                          width: width * 0.28,
-                          child: CustomTextField(
-                            controller: passWordController,
+                        height: height * 0.1,
+                        width: width * 0.28,
+                        child: ValueListenableBuilder<bool>(
+                          builder: (context, isVisible, child) =>
+                              CustomTextField(
+                            fillColor: AppColor.white,
+                            isVisibleText: isVisible,
                             hintText: 'Password',
                             hintStyle:
                                 const TextStyle(fontSize: AppSize.xmeddium),
-                            fillColor: AppColor.white,
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                passwordVisibility.value =
+                                    !passwordVisibility.value;
+                              },
+                              child: Icon(
+                                isVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                            ),
+                            controller: passWordController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Enter Password';
@@ -129,8 +152,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                 }
                               }
                             },
-                          )),
-                      CustomSize(height: height * 0.03),
+                          ),
+                          valueListenable: passwordVisibility,
+                        ),
+                      ),
+                                      SizedBox(height: height * 0.03),
                       SizedBox(
                           height: height * 0.1,
                           width: width * 0.28,
@@ -141,16 +167,27 @@ class _SignInScreenState extends State<SignInScreen> {
                                     email: emailController.text,
                                     password: passWordController.text,
                                     context: context);
-                                AuthServices.admin(
+
+                                bool? loginSuccess;
+
+                                // ignore: unnecessary_null_comparison
+                                if (loginSuccess != null) {
+                                  AuthServices.storeAdminData(
                                     email: emailController.text,
-                                    controller: emailController,
-                                    password: passWordController.text);
+                                    controller: emailController.text,
+                                  );
+
+                                  emailController.clear();
+                                  passWordController.clear();
+
+                                  FocusScope.of(context).unfocus();
+                                } else {}
                               }
                             },
                             textSize: AppSize.xmeddium,
-                            text: 'Generate Magic Link',
+                            text: 'Sign In',
                           )),
-                      CustomSize(height: height * 0.1),
+                                      SizedBox(height: height * 0.1),
                     ],
                   ),
                 ),

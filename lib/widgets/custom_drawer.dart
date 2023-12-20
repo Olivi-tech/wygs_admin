@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guitar_songs/constants/constants.dart';
-import 'package:guitar_songs/provider/screen_transition_provider.dart';
+import 'package:guitar_songs/providers/providers.dart';
+import 'package:guitar_songs/utlis/app_routes.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +37,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
         height: height,
         width: 230,
         decoration: BoxDecoration(
-            color: AppColor.white, border: Border.all(color: AppColor.black)),
+            color: AppColor.white,
+            border: Border.all(color: AppColor.jetBlack)),
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
@@ -47,7 +51,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   indent: 2,
                   endIndent: 2,
                 ),
-                CustomSize(height: height * 0.04),
+                                SizedBox(height: height * 0.04),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 0;
@@ -67,7 +71,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     text: 'Progress Management',
                   ),
                 ),
-                CustomSize(height: height * 0.015),
+                               SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 1;
@@ -87,7 +91,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     text: 'Community Management',
                   ),
                 ),
-                CustomSize(height: height * 0.015),
+                                SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 2;
@@ -107,7 +111,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     text: 'Guest Management',
                   ),
                 ),
-                CustomSize(height: height * 0.015),
+                                SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 3;
@@ -127,7 +131,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     text: 'Billing Management',
                   ),
                 ),
-                CustomSize(height: height * 0.015),
+                SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 4;
@@ -147,10 +151,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     text: 'Settings',
                   ),
                 ),
-                CustomSize(height: height * 0.15),
+                SizedBox(height: height * 0.15),
                 InkWell(
-                  onTap: () {
-                  FirebaseAuth.instance.signOut();
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, AppRoutes.signin, (route) => false);
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,

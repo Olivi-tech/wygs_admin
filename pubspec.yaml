@@ -43,6 +43,8 @@ dependencies:
   email_validator: ^2.1.17
   fluttertoast: ^8.0.8
   cloud_firestore: 
+  firebase_storage: ^11.5.6
+
   
   
 
