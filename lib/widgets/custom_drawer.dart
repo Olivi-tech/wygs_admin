@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -30,12 +29,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final double height = size.height;
-
+    final double width = size.width;
     return Consumer<ScreenTransitionProvider>(
         builder: (context, providerIndex, child) {
       return Container(
         height: height,
-        width: 230,
+        width: 250,
         decoration: BoxDecoration(
             color: AppColor.white,
             border: Border.all(color: AppColor.jetBlack)),
@@ -44,14 +43,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Image.asset(AppImages.guitarLogo),
+                SizedBox(
+                    height: height * 0.13,
+                    width: width * 0.13,
+                    child: Image.asset(AppImages.guitar)),
+                SizedBox(height: height * 0.04),
                 const Divider(
                   height: 8,
                   thickness: 1,
                   indent: 2,
                   endIndent: 2,
                 ),
-                                SizedBox(height: height * 0.04),
+                SizedBox(height: height * 0.04),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 0;
@@ -71,60 +74,80 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     text: 'Progress Management',
                   ),
                 ),
-                               SizedBox(height: height * 0.015),
+                SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 1;
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,
-                    bgColor: providerIndex.getIndex == 1
-                        ? AppColor.blue
-                        : AppColor.white,
                     iconColor: providerIndex.getIndex == 1
                         ? AppColor.white
                         : AppColor.blue,
+                    bgColor: providerIndex.getIndex == 1
+                        ? AppColor.blue
+                        : AppColor.white,
                     textColor: providerIndex.getIndex == 1
                         ? AppColor.white
                         : AppColor.blue,
-                    iconPath: AppSvgs.chartOutline,
-                    text: 'Community Management',
+                    iconPath: AppSvgs.userLinear,
+                    text: 'User Management',
                   ),
                 ),
-                                SizedBox(height: height * 0.015),
+                SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
                     screenTransitionProvider.setIndex = 2;
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,
-                    iconColor: providerIndex.getIndex == 2
-                        ? AppColor.white
-                        : AppColor.blue,
                     bgColor: providerIndex.getIndex == 2
                         ? AppColor.blue
                         : AppColor.white,
+                    iconColor: providerIndex.getIndex == 2
+                        ? AppColor.white
+                        : AppColor.blue,
                     textColor: providerIndex.getIndex == 2
                         ? AppColor.white
                         : AppColor.blue,
-                    iconPath: AppSvgs.guest,
-                    text: 'Guest Management',
+                    iconPath: AppSvgs.chartOutline,
+                    text: 'Community Management',
                   ),
                 ),
-                                SizedBox(height: height * 0.015),
+                SizedBox(height: height * 0.015),
+                // InkWell(
+                //   onTap: () {
+                //     screenTransitionProvider.setIndex = 3;
+                //   },
+                //   child: buildCustomContainer(
+                //     height: height * 0.07,
+                //     iconColor: providerIndex.getIndex == 3
+                //         ? AppColor.white
+                //         : AppColor.blue,
+                //     bgColor: providerIndex.getIndex == 3
+                //         ? AppColor.blue
+                //         : AppColor.white,
+                //     textColor: providerIndex.getIndex == 3
+                //         ? AppColor.white
+                //         : AppColor.blue,
+                //     iconPath: AppSvgs.guest,
+                //     text: 'Guest Management',
+                //   ),
+                // ),
+                //  SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
-                    screenTransitionProvider.setIndex = 3;
+                    screenTransitionProvider.setIndex = 4;
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,
-                    iconColor: providerIndex.getIndex == 3
+                    iconColor: providerIndex.getIndex == 4
                         ? AppColor.white
                         : AppColor.blue,
-                    textColor: providerIndex.getIndex == 3
+                    textColor: providerIndex.getIndex == 4
                         ? AppColor.white
                         : AppColor.blue,
-                    bgColor: providerIndex.getIndex == 3
+                    bgColor: providerIndex.getIndex == 4
                         ? AppColor.blue
                         : AppColor.white,
                     iconPath: AppSvgs.bill,
@@ -134,17 +157,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
-                    screenTransitionProvider.setIndex = 4;
+                    screenTransitionProvider.setIndex = 5;
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,
-                    bgColor: providerIndex.getIndex == 4
+                    bgColor: providerIndex.getIndex == 5
                         ? AppColor.blue
                         : AppColor.white,
-                    iconColor: providerIndex.getIndex == 4
+                    iconColor: providerIndex.getIndex == 5
                         ? AppColor.white
                         : AppColor.blue,
-                    textColor: providerIndex.getIndex == 4
+                    textColor: providerIndex.getIndex == 5
                         ? AppColor.white
                         : AppColor.blue,
                     iconPath: AppSvgs.settings,
@@ -202,7 +225,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             child: CustomText(
               text: text,
               color: textColor,
-              size: AppSize.xmeddium,
+              size: AppSize.large,
               fontWeight: FontWeight.w500,
             ),
           )

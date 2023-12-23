@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<ScreenTransitionProvider>(
             create: (context) => ScreenTransitionProvider(),
           ),
-          ChangeNotifierProvider<ProgressCheckProvider>(
-            create: (context) => ProgressCheckProvider(),
+          ChangeNotifierProvider<UserCheckProvider>(
+            create: (context) => UserCheckProvider(),
           ),
           ChangeNotifierProvider<CommunityCheckProvider>(
             create: (context) => CommunityCheckProvider(),
@@ -42,11 +42,17 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<BillingCheckProvider>(
             create: (context) => BillingCheckProvider(),
           ),
+          ChangeNotifierProvider<ProgressCheckProvider>(
+            create: (context) => ProgressCheckProvider(),
+          ),
+          ChangeNotifierProvider<ImagePickerProvider>(
+            create: (context) => ImagePickerProvider(),
+          ),
         ],
         child: const MaterialApp(
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             onGenerateRoute: onGenerateRoute,
-            home: SignInScreen()));
+            home: HomeScreen()));
   }
 }

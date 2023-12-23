@@ -1,12 +1,17 @@
+import 'dart:developer';
+import 'dart:typed_data';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/db_services.dart';
 import 'package:guitar_songs/model/model.dart';
+import 'package:guitar_songs/providers/providers.dart';
 import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -27,9 +32,14 @@ class _SettingScreenState extends State<SettingScreen> {
       AuthServices.fetchAdminData().then((value) => value);
 
   late Future<AdminModel?> adminDetails;
+  late ImagePickerProvider imagePickerProvider;
 
   @override
   void initState() {
+    imagePickerProvider =
+        Provider.of<ImagePickerProvider>(context, listen: false);
+    Future.delayed(Duration.zero)
+        .then((value) => imagePickerProvider.setPath = '');
     adminDetails = AuthServices.fetchAdminDetails().then((adminModel) {
       return adminModel;
     });
@@ -94,12 +104,26 @@ class _SettingScreenState extends State<SettingScreen> {
                         ),
                       ),
                       Positioned(
-                          top: 40,
-                          left: 70,
-                          child: SizedBox(
-                              height: 120,
-                              width: 120,
-                              child: Image.asset(AppImages.person))),
+                        top: 40,
+                        left: 70,
+                        child: SizedBox(
+                            height: 120,
+                            width: 120,
+                            child: GestureDetector(
+                              child: Consumer<ImagePickerProvider>(
+                                builder: (context, value, child) {
+                                  return SizedBox(
+                                    child: value.path.isNotEmpty
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                NetworkImage(value.path),
+                                          )
+                                        : Image.asset(AppImages.person),
+                                  );
+                                },
+                              ),
+                            )),
+                      ),
                       const Positioned(
                         top: 110,
                         left: 270,
@@ -115,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             CustomText(
                               text: '@Shakil Awan',
                               color: AppColor.indigo,
-                              size: AppSize.meddium,
+                              size: AppSize.large,
                               fontWeight: FontWeight.w400,
                             )
                           ],
@@ -131,21 +155,25 @@ class _SettingScreenState extends State<SettingScreen> {
                             Row(
                               children: [
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    AppUtlis.storeImageToFirebase(context);
+                                  },
                                   child: const CustomText(
                                     text: 'Change',
                                     color: AppColor.blue,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
                                 const Gap(40),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    imagePickerProvider.deleteImage();
+                                  },
                                   child: const CustomText(
                                     text: 'Delete',
                                     color: AppColor.red,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 )
@@ -156,14 +184,14 @@ class _SettingScreenState extends State<SettingScreen> {
                               child: CustomText(
                                 text: 'Edit Profile',
                                 color: AppColor.black,
-                                size: AppSize.large,
+                                size: AppSize.xlarge,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             const CustomText(
                               text: 'Set up your personal information',
                               color: AppColor.indigo,
-                              size: AppSize.meddium,
+                              size: AppSize.large,
                               fontWeight: FontWeight.w400,
                             ),
                             Padding(
@@ -173,14 +201,14 @@ class _SettingScreenState extends State<SettingScreen> {
                                   const CustomText(
                                     text: 'Email ID',
                                     color: AppColor.black,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   Gap(width * 0.3),
                                   const CustomText(
                                     text: 'Username',
                                     color: AppColor.indigo,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ],
@@ -255,14 +283,14 @@ class _SettingScreenState extends State<SettingScreen> {
                                   const CustomText(
                                     text: 'First Name',
                                     color: AppColor.black,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   Gap(width * 0.285),
                                   const CustomText(
                                     text: 'Last Name',
                                     color: AppColor.indigo,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ],
@@ -280,8 +308,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                         width: width * 0.23,
                                         child: CustomTextFormField(
                                           keyBoardType: TextInputType.name,
-                                          hintText:
-                                              data.fullName?.split(' ')[0],
+                                          hintText: data.firstName,
                                           controller: firstNameController,
                                           fillColor: AppColor.white,
                                           validator: (value) {
@@ -302,8 +329,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                         width: width * 0.23,
                                         child: CustomTextFormField(
                                           keyBoardType: TextInputType.name,
-                                          hintText:
-                                              data.fullName!.split(' ')[1],
+                                          hintText: data.lastName,
                                           controller: lastNameController,
                                           fillColor: AppColor.white,
                                           validator: (value) {
@@ -327,14 +353,14 @@ class _SettingScreenState extends State<SettingScreen> {
                                   const CustomText(
                                     text: 'Phone No',
                                     color: AppColor.black,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   Gap(width * 0.295),
                                   const CustomText(
                                     text: 'Address',
                                     color: AppColor.indigo,
-                                    size: AppSize.meddium,
+                                    size: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ],
@@ -406,23 +432,37 @@ class _SettingScreenState extends State<SettingScreen> {
                                       backgroundColor: AppColor.blue),
                                   onPressed: () async {
                                     Utlis().toastMessage('Saved Successfully');
+
                                     AdminModel adminModel = AdminModel(
-                                      userName: usernameController.text,
-                                      address: addressController.text,
-                                      fullName:
-                                          '${firstNameController.text} ${lastNameController.text}',
-                                      phoneNumber: phoneController.text,
-                                    );
+                                        userName:
+                                            usernameController.text.isEmpty
+                                                ? data.userName
+                                                : usernameController.text,
+                                        address: addressController.text.isEmpty
+                                            ? data.address
+                                            : addressController.text,
+                                        firstName:
+                                            firstNameController.text.isEmpty
+                                                ? data.firstName
+                                                : firstNameController.text,
+                                        lastName:
+                                            lastNameController.text.isEmpty
+                                                ? data.lastName
+                                                : lastNameController.text,
+                                        phoneNumber:
+                                            phoneController.text.isEmpty
+                                                ? data.phoneNumber
+                                                : phoneController.text);
+                                    AuthServices.updateAdminDetails(
+                                        adminModel: adminModel);
                                     AuthServices.storeAdminDetails(
                                         adminModel: adminModel);
-
-                                    setState(() {});
                                   },
                                   child: const Center(
                                     child: Text(
                                       'SAVE',
                                       style: TextStyle(
-                                          fontSize: AppSize.xmeddium,
+                                          fontSize: AppSize.large,
                                           fontWeight: FontWeight.w600,
                                           color: AppColor.white),
                                     ),

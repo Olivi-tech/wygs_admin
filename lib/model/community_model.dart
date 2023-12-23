@@ -18,7 +18,7 @@ class CommunityModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'postBy': postBy,
+      'post_by': postBy,
       'description': description,
       'date': date,
       'likes': likes,
@@ -30,7 +30,7 @@ class CommunityModel {
 
   factory CommunityModel.fromMap(Map<String, dynamic> map) {
     return CommunityModel(
-      postBy: map['postBy'] != null ? map['postBy'] as String : null,
+      postBy: map['post_by'] != null ? map['post_by'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
       date: map['date'] != null ? map['date'] as String : null,

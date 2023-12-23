@@ -8,10 +8,14 @@ class AppSvgs {
   static const logout = 'assets/svgs/logout.svg';
   static const settings = 'assets/svgs/settings.svg';
   static const userBold = 'assets/svgs/user_bold.svg';
+  static const userLinear = 'assets/svgs/user_linear.svg';
+  static const search = 'assets/svgs/search.svg';
+  static const delete = 'assets/svgs/delete.svg';
+  static const danger = 'assets/svgs/danger.svg';
 }
 
 class AppImages {
-  static const guitarLogo = 'assets/images/guitar_logo.png';
+  static const guitar = 'assets/images/guitar.png';
   static const community = 'assets/images/community.png';
   static const rainbow = 'assets/images/rainbow.jpeg';
   static const person = 'assets/images/person.png';

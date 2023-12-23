@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/providers/providers.dart';
-
 import 'package:guitar_songs/screens/screens.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   bool isDrawerVisible = true;
+  late TextEditingController searchController;
+  @override
+  void initState() {
+    searchController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +76,23 @@ class HomeScreen extends StatelessWidget {
                         Row(
                           children: [
                             Padding(
+                              padding: const EdgeInsets.only(right: 30),
+                              child: SizedBox(
+                                width: width * 0.17,
+                                height: height * 0.07,
+                                child: CustomTextFormField(
+                                  hintText: 'Search here',
+                                  controller: searchController,
+                                  onChanged: (value) {},
+                                  fillColor: AppColor.white,
+                                  suffixIcon: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SvgPicture.asset(AppSvgs.search),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: CustomContainer(
                                 decoration: BoxDecoration(
@@ -77,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                             const Padding(
-                              padding: EdgeInsets.only(right: 15),
+                              padding: EdgeInsets.only(right: 50),
                               child: CustomText(
                                 text: 'Shakeel Awan',
                                 color: Color(0xFF0C356A),
@@ -90,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                                  SizedBox(height: height * 0.03),
+                  SizedBox(height: height * 0.03),
                   SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: SizedBox(
@@ -99,14 +133,16 @@ class HomeScreen extends StatelessWidget {
                       child: Consumer<ScreenTransitionProvider>(
                           builder: (context, providerIndex, child) {
                         return providerIndex.getIndex == 0
-                            ?  ProgressManagementScreen()
+                            ? const ProgressManagementScreen()
                             : providerIndex.getIndex == 1
-                                ? CommunityManagementScreen()
+                                ? UserManagementScreen()
                                 : providerIndex.getIndex == 2
-                                    ?  GuestManagementScreen()
+                                    ? CommunityManagementScreen()
                                     : providerIndex.getIndex == 3
-                                        ?  BillingManagementScreen()
-                                        : const SettingScreen();
+                                        ? GuestManagementScreen()
+                                        : providerIndex.getIndex == 4
+                                            ? BillingManagementScreen()
+                                            : const SettingScreen();
                       }),
                     ),
                   )

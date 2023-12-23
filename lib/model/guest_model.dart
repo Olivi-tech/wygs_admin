@@ -14,7 +14,7 @@ class GuestModel {
     return <String, dynamic>{
       'name': name,
       'email': email,
-      'joiningDate': joiningDate,
+      'joining_date': joiningDate,
       'status': status,
     };
   }
@@ -23,7 +23,7 @@ class GuestModel {
     return GuestModel(
       name: map['name'] as String,
       email: map['email'] as String,
-      joiningDate: map['joiningDate'] as String,
+      joiningDate: map['joining_date'] as String,
       status: map['status'] as String,
     );
   }

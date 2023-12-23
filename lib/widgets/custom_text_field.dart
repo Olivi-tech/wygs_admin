@@ -7,7 +7,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final void Function(String)? onChanged;
   final TextInputType? keyBoardType;
-  final Color fillColor;
+  final Color? fillColor;
   final FormFieldValidator? validator;
   final TextStyle? hintStyle;
   final TextStyle? suffixStyle;
@@ -22,7 +22,7 @@ class CustomTextField extends StatelessWidget {
     this.validator,
     this.keyBoardType,
     this.suffixIcon,
-    required this.fillColor,
+    this.fillColor,
     this.hintStyle,
     this.suffixStyle,
     this.isVisibleText = false,
@@ -50,7 +50,7 @@ class CustomTextField extends StatelessWidget {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(color: AppColor.white)),
-          hintStyle: const TextStyle(fontSize: AppSize.xmeddium),
+          hintStyle: const TextStyle(fontSize: AppSize.large),
           suffixStyle: suffixStyle,
           filled: true,
           fillColor: fillColor),

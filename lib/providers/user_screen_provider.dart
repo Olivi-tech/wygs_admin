@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-class GuestCheckProvider extends ChangeNotifier {
+class UserCheckProvider extends ChangeNotifier {
   List<int> selectedIndices = [];
   bool isAllSeleted = false;
- 
 
   void toggleChecked(int index) {
     if (selectedIndices.contains(index)) {
@@ -18,8 +17,6 @@ class GuestCheckProvider extends ChangeNotifier {
     return selectedIndices.contains(index);
   }
 
-  
-
   selectAll(List items) {
     isAllSeleted = !isAllSeleted;
     if (items.length == selectedIndices.length) {
@@ -27,11 +24,9 @@ class GuestCheckProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       selectedIndices.clear();
-
       for (int i = 0; i < items.length; i++) {
         toggleChecked(i);
       }
-
     }
   }
 }

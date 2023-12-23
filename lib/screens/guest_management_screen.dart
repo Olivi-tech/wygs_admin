@@ -10,10 +10,17 @@ import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class GuestManagementScreen extends StatelessWidget {
-  GuestManagementScreen({super.key});
+class GuestManagementScreen extends StatefulWidget {
+  const GuestManagementScreen({super.key});
 
-  Stream<List<GuestModel>> guestStream = ScreensServices.fetchGuestManagement();
+  @override
+  State<GuestManagementScreen> createState() => _GuestManagementScreenState();
+}
+
+class _GuestManagementScreenState extends State<GuestManagementScreen> {
+  Stream<List<GuestModel>> guestStream =
+      FirestoreServices.fetchGuestManagement();
+
   late GuestCheckProvider guestCheckProvider;
 
   @override
@@ -34,251 +41,304 @@ class GuestManagementScreen extends StatelessWidget {
             ));
           } else if (snapshot.hasData) {
             List<GuestModel> guestData = snapshot.data!;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Gap(height * 0.04),
-                Padding(
-                  padding: const EdgeInsets.only(right: 22),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: SizedBox(
-                      height: height * 0.07,
-                      width: width * 0.12,
-                      child: CustomButton(
-                        onPressed: () {},
-                        text: 'Invite Member',
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Gap(height * 0.04),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 22),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: SizedBox(
+                        height: height * 0.07,
+                        width: width * 0.12,
+                        child: CustomButton(
+                          onPressed: () {},
+                          text: 'Invite Member',
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 15, left: 25),
-                  child: CustomText(
-                    text: 'Guest User’s Management',
-                    color: AppColor.blackish,
-                    size: AppSize.xmeddium,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 20, bottom: 30),
-                  child: CustomContainer(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColor.white,
-                      border: Border.all(color: AppColor.jetBlack),
-                      borderRadius: BorderRadius.circular(15),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 15, left: 25),
+                    child: CustomText(
+                      text: 'Guest User’s Management',
+                      color: AppColor.blackish,
+                      size: AppSize.large,
+                      fontWeight: FontWeight.w600,
                     ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columnSpacing: MediaQuery.of(context).size.width * 0.1,
-                        columns: [
-                          DataColumn(
-                            label: Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    guestCheckProvider.selectAll(guestData);
-                                  },
-                                  child: Consumer<GuestCheckProvider>(
-                                    builder: (context, value, child) {
-                                      return Container(
-                                          height: 18,
-                                          width: 18,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            border: Border.all(
-                                                color: Colors.black
-                                                    .withOpacity(0.7)),
-                                          ),
-                                          child: value.isAllSeleted
-                                              ? const Icon(
-                                                  Icons.check,
-                                                  size: 14,
-                                                  color: AppColor.blue,
-                                                )
-                                              : const SizedBox());
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 20, top: 20, bottom: 30),
+                    child: CustomContainer(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColor.white,
+                        border: Border.all(color: AppColor.jetBlack),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columnSpacing:
+                              MediaQuery.of(context).size.width * 0.095,
+                          columns: [
+                            DataColumn(
+                              label: Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      guestCheckProvider.selectAll(guestData);
                                     },
+                                    child: Consumer<GuestCheckProvider>(
+                                      builder: (context, value, child) {
+                                        return Container(
+                                            height: 18,
+                                            width: 18,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              border: Border.all(
+                                                  color: Colors.black
+                                                      .withOpacity(0.7)),
+                                            ),
+                                            child:
+                                                value.selectedIndices.length ==
+                                                        guestData.length
+                                                    ? const Icon(
+                                                        Icons.check,
+                                                        size: 14,
+                                                        color: AppColor.blue,
+                                                      )
+                                                    : const SizedBox());
+                                      },
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 10),
-                                const CustomText(
-                                  text: 'Name',
+                                  const SizedBox(width: 10),
+                                  const CustomText(
+                                    text: 'Name',
+                                    color: AppColor.indigo,
+                                    size: AppSize.small,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const DataColumn(
+                              label: Expanded(
+                                child: CustomText(
+                                  text: 'Email ID',
                                   color: AppColor.indigo,
                                   size: AppSize.small,
                                   fontWeight: FontWeight.w500,
                                 ),
-                              ],
-                            ),
-                          ),
-                          const DataColumn(
-                            label: Expanded(
-                              child: CustomText(
-                                text: 'Email ID',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
-                          const DataColumn(
-                            label: Expanded(
-                              child: CustomText(
-                                text: 'Joining Date',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
+                            const DataColumn(
+                              label: Expanded(
+                                child: CustomText(
+                                  text: 'Joining Date',
+                                  color: AppColor.indigo,
+                                  size: AppSize.small,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                          ),
-                          const DataColumn(
-                            label: Expanded(
-                              child: CustomText(
-                                text: 'Role',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
+                            const DataColumn(
+                              label: Expanded(
+                                child: CustomText(
+                                  text: 'Role',
+                                  color: AppColor.indigo,
+                                  size: AppSize.small,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                          ),
-                          const DataColumn(
-                            label: Expanded(
-                              child: CustomText(
-                                text: 'Status',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                        rows: guestData
-                            .asMap()
-                            .entries
-                            .map((MapEntry<int, GuestModel> entry) {
-                          final int index = entry.key;
-                          final GuestModel model = entry.value;
-                          return DataRow(
-                            cells: [
-                              DataCell(
-                                Row(
+                            DataColumn(
+                              label: Expanded(
+                                child: Row(
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        guestCheckProvider.toggleChecked(index);
+                                    const CustomText(
+                                      text: 'Status',
+                                      color: AppColor.indigo,
+                                      size: AppSize.small,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    Consumer<GuestCheckProvider>(
+                                      builder: (context, value, child) {
+                                        return value.selectedIndices.length ==
+                                                guestData.length
+                                            ? SvgPicture.asset(AppSvgs.delete)
+                                            : const SizedBox();
                                       },
-                                      child: Consumer<GuestCheckProvider>(
-                                        builder: (context, provider, child) =>
-                                            Container(
-                                          height: 18,
-                                          width: 18,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            border: Border.all(
-                                                color: Colors.black
-                                                    .withOpacity(0.7)),
-                                          ),
-                                          child: provider.isSelected(index)
-                                              ? const Icon(
-                                                  Icons.check,
-                                                  size: 14,
-                                                  color: AppColor.blue,
-                                                )
-                                              : null,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    CustomContainer(
-                                      decoration: BoxDecoration(
-                                        color: nameColor(model.name),
-                                        borderRadius: BorderRadius.circular(36),
-                                      ),
-                                      height: 25,
-                                      width: 25,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child:
-                                            SvgPicture.asset(AppSvgs.userBold),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    CustomText(
-                                      text: model.name,
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),
-                              DataCell(
-                                CustomText(
-                                  text: model.email,
-                                  color: AppColor.indigo.withOpacity(0.9),
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              DataCell(
-                                CustomText(
-                                  text: model.joiningDate,
-                                  color: AppColor.indigo.withOpacity(0.9),
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              DataCell(
-                                CustomContainer(
-                                  height: 25,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                      color: AppColor.skyBlue.withOpacity(0.6),
-                                      border: Border.all(
-                                        color: AppColor.blue.withOpacity(0.7),
+                            ),
+                          ],
+                          rows: guestData
+                              .asMap()
+                              .entries
+                              .map((MapEntry<int, GuestModel> entry) {
+                            final int index = entry.key;
+                            final GuestModel model = entry.value;
+                            return DataRow(
+                              cells: [
+                                DataCell(
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          guestCheckProvider
+                                              .toggleChecked(index);
+                                        },
+                                        child: Consumer<GuestCheckProvider>(
+                                          builder: (context, provider, child) =>
+                                              Container(
+                                            height: 18,
+                                            width: 18,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              border: Border.all(
+                                                  color: Colors.black
+                                                      .withOpacity(0.7)),
+                                            ),
+                                            child: provider.isSelected(index)
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    size: 14,
+                                                    color: AppColor.blue,
+                                                  )
+                                                : null,
+                                          ),
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: const Center(
-                                    child: CustomText(
-                                      text: 'Guest',
-                                      color: AppColor.blue,
-                                      size: 10,
-                                      fontWeight: FontWeight.w500,
+                                      const SizedBox(width: 10),
+                                      CustomContainer(
+                                        decoration: BoxDecoration(
+                                          color: nameColor(model.name),
+                                          borderRadius:
+                                              BorderRadius.circular(36),
+                                        ),
+                                        height: 25,
+                                        width: 25,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: SvgPicture.asset(
+                                              AppSvgs.userBold),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      CustomText(
+                                        text: model.name,
+                                        color: AppColor.indigo.withOpacity(0.9),
+                                        size: AppSize.xsmall,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                DataCell(
+                                  CustomText(
+                                    text: model.email,
+                                    color: AppColor.indigo.withOpacity(0.9),
+                                    size: AppSize.xsmall,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                DataCell(
+                                  CustomText(
+                                    text: model.joiningDate,
+                                    color: AppColor.indigo.withOpacity(0.9),
+                                    size: AppSize.xsmall,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                DataCell(
+                                  CustomContainer(
+                                    height: 25,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                        color:
+                                            AppColor.skyBlue.withOpacity(0.6),
+                                        border: Border.all(
+                                          color: AppColor.blue.withOpacity(0.7),
+                                        ),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: const Center(
+                                      child: CustomText(
+                                        text: 'Guest',
+                                        color: AppColor.blue,
+                                        size: 10,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              DataCell(
-                                CustomContainer(
-                                  decoration: BoxDecoration(
-                                    color: statusColor(model.status),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  height: 23,
-                                  width: 77,
-                                  child: Center(
-                                    child: CustomText(
-                                      text: model.status,
-                                      color: AppColor.white,
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                DataCell(
+                                  Row(
+                                    children: [
+                                      CustomContainer(
+                                        decoration: BoxDecoration(
+                                          color: statusColor(model.status),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        height: 23,
+                                        width: 77,
+                                        child: Center(
+                                          child: CustomText(
+                                            text: model.status,
+                                            color: AppColor.white,
+                                            size: AppSize.xsmall,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                      Consumer<GuestCheckProvider>(
+                                        builder: (context, value, child) {
+                                          return value.selectedIndices.length ==
+                                                  guestData.length
+                                              ? const SizedBox()
+                                              : GestureDetector(
+                                                  onTap: () {
+                                                    guestCheckProvider
+                                                        .toggleChecked(index);
+                                                  },
+                                                  child: value.isSelected(index)
+                                                      ? Container(
+                                                          height: 40,
+                                                          width: 50,
+                                                          color: AppColor.white,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(10.0),
+                                                            child: SvgPicture
+                                                                .asset(AppSvgs
+                                                                    .delete),
+                                                          ),
+                                                        )
+                                                      : const SizedBox(),
+                                                );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             );
           } else {
             return const Text('');

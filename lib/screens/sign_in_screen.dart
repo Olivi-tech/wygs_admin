@@ -75,35 +75,34 @@ class _SignInScreenState extends State<SignInScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: height * 0.3,
-                        child: Image.asset(AppImages.guitarLogo),
+                        height: height * 0.2,
+                        child: Image.asset(AppImages.guitar),
                       ),
-                                      SizedBox(height: height * 0.02),
+                      SizedBox(height: height * 0.02),
                       const CustomText(
                         text: 'Sign in',
                         color: AppColor.black,
                         size: 36,
                         fontWeight: FontWeight.w700,
                       ),
-                                      SizedBox(height: height * 0.015),
+                      SizedBox(height: height * 0.015),
                       const FittedBox(
                         child: CustomText(
                           text:
                               'Enter registered email id below to get \nthe magic link for sign in.',
                           color: AppColor.black,
-                          size: AppSize.xmeddium,
+                          size: AppSize.large,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                                      SizedBox(height: height * 0.03),
+                      SizedBox(height: height * 0.03),
                       SizedBox(
                           height: height * 0.1,
                           width: width * 0.28,
                           child: CustomTextField(
                             controller: emailController,
                             hintText: 'Enter Email ID',
-                            hintStyle:
-                                const TextStyle(fontSize: AppSize.xmeddium),
+                            hintStyle: const TextStyle(fontSize: AppSize.large),
                             fillColor: AppColor.white,
                             validator: (email) {
                               if (email != null &&
@@ -113,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               return null;
                             },
                           )),
-                                      SizedBox(height: height * 0.03),
+                      SizedBox(height: height * 0.03),
                       SizedBox(
                         height: height * 0.1,
                         width: width * 0.28,
@@ -123,8 +122,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             fillColor: AppColor.white,
                             isVisibleText: isVisible,
                             hintText: 'Password',
-                            hintStyle:
-                                const TextStyle(fontSize: AppSize.xmeddium),
+                            hintStyle: const TextStyle(fontSize: AppSize.large),
                             suffixIcon: GestureDetector(
                               onTap: () {
                                 passwordVisibility.value =
@@ -156,7 +154,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           valueListenable: passwordVisibility,
                         ),
                       ),
-                                      SizedBox(height: height * 0.03),
+                      SizedBox(height: height * 0.03),
                       SizedBox(
                           height: height * 0.1,
                           width: width * 0.28,
@@ -184,10 +182,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                 } else {}
                               }
                             },
-                            textSize: AppSize.xmeddium,
+                            textSize: AppSize.large,
                             text: 'Sign In',
                           )),
-                                      SizedBox(height: height * 0.1),
+                      SizedBox(height: height * 0.1),
                     ],
                   ),
                 ),

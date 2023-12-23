@@ -18,4 +18,5 @@ class AppColor {
   static const blackish = Color(0xFF424D57);
   static const lightWhite = Color(0xFFF3F7F9);
   static const purple = Color(0xFF7B43F5);
+  static const paleBlue = Color(0xFFE5EFF6);
 }

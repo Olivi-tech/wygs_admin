@@ -31,11 +31,7 @@ class CustomText extends StatelessWidget {
       text,
       softWrap: softWrap,
       style: TextStyle(
-          fontSize: size,
-          color: color,
-          overflow: textOverflow,
-          fontWeight: fontWeight,
-          height: height),
+          fontSize: size, color: color, fontWeight: fontWeight, height: height),
     );
   }
 }

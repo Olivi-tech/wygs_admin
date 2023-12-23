@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class ProgressCheckProvider extends ChangeNotifier {
   List<int> selectedIndices = [];
   bool isAllSeleted = false;
-
-  void toggleChecked(int index) {
+  void toogle(int index) {
     if (selectedIndices.contains(index)) {
       selectedIndices.remove(index);
     } else {
@@ -24,8 +23,8 @@ class ProgressCheckProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       selectedIndices.clear();
-      for (int i = 0; i < items.length; i++) {
-        toggleChecked(i);
+      for (var i = 0; i < items.length; i++) {
+        toogle(i);
       }
     }
   }

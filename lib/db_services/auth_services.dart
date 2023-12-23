@@ -33,8 +33,20 @@ class AuthServices {
     try {
       DocumentReference users = FirebaseFirestore.instance
           .collection('adminDetails')
-          .doc(adminModel.userName);
+          .doc(FirebaseAuth.instance.currentUser!.displayName);
       await users.set(adminModel.toMap());
+    } catch (e) {
+      log('Error : ${e.toString()}');
+    }
+  }
+
+   static Future<void> updateAdminDetails(
+      {required AdminModel adminModel}) async {
+    try {
+      DocumentReference users = FirebaseFirestore.instance
+          .collection('adminDetails')
+          .doc(adminModel.userName);
+      await users.update(adminModel.toMap());
     } catch (e) {
       log('Error : ${e.toString()}');
     }

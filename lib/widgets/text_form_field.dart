@@ -3,12 +3,13 @@ import 'package:guitar_songs/constants/constants.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
-  final Widget? prefixIcon;
+  final Widget? suffixIcon;
   final String? hintText;
   final void Function(String)? onChanged;
   final FormFieldValidator? validator;
   final TextInputType? keyBoardType;
   final Color fillColor;
+
   final TextStyle? hintStyle;
   final bool readOnly;
   final TextStyle? suffixStyle;
@@ -18,7 +19,7 @@ class CustomTextFormField extends StatelessWidget {
     this.hintText,
     this.onChanged,
     this.keyBoardType,
-    this.prefixIcon,
+    this.suffixIcon,
     required this.fillColor,
     this.hintStyle,
     this.suffixStyle,
@@ -39,7 +40,7 @@ class CustomTextFormField extends StatelessWidget {
           focusColor: AppColor.lightSilver,
           contentPadding: const EdgeInsets.only(top: 10, left: 10),
           hintText: hintText,
-          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(
@@ -62,7 +63,7 @@ class CustomTextFormField extends StatelessWidget {
                 color: Color(0xE5D1D9E6),
               )),
           hintStyle: const TextStyle(
-            fontSize: AppSize.meddium,
+            fontSize: AppSize.large,
             fontWeight: FontWeight.w500,
           ),
           suffixStyle: suffixStyle,

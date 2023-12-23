@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:guitar_songs/model/model.dart';
+import 'package:guitar_songs/utlis/toast.dart';
 
-class ScreensServices {
+class FirestoreServices {
   static Stream<List<BillingModel>> fetchBillingManagement() {
     return FirebaseFirestore.instance
         .collection('billingManagement')
@@ -13,13 +16,25 @@ class ScreensServices {
     });
   }
 
-  static Stream<List<ProgressModel>> fetchProgressManagement() {
+//  static Future<void> deleteBillingData() async {
+//     try {
+//       await FirebaseFirestore.instance
+//           .collection('billingManagement')
+//           .doc()
+//           .delete()
+//           .then((value) => Utlis().toastMessage('Data Deleted Successfully'));
+//     } catch (e) {
+//       log('Error deleting billing data: $e');
+//     }
+//   }
+
+  static Stream<List<UserModel>> fetchUserManagement() {
     return FirebaseFirestore.instance
-        .collection('progressManagement')
+        .collection('userManagement')
         .snapshots()
         .map((QuerySnapshot<Map<String, dynamic>> event) {
       return event.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
-        return ProgressModel.fromMap(doc.data());
+        return UserModel.fromMap(doc.data());
       }).toList();
     });
   }
@@ -39,10 +54,21 @@ class ScreensServices {
         .instance
         .collection('communityManagement')
         .snapshots();
-        return stream.map((event) {
-        return event.docs.map((doc) {
-          return CommunityModel.fromMap(doc.data());
-        }).toList();
-        });
+    return stream.map((event) {
+      return event.docs.map((doc) {
+        return CommunityModel.fromMap(doc.data());
+      }).toList();
+    });
+  }
+
+  static Stream<List<ProgressModel>> fetchProgressManagement(
+      {String? searchItems}) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> stream =
+        FirebaseFirestore.instance.collection('progressManagement').snapshots();
+    return stream.map((event) {
+      return event.docs.map((doc) {
+        return ProgressModel.fromMap(doc.data());
+      }).toList();
+    });
   }
 }
