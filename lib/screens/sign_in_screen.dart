@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guitar_songs/clippers/sign_in_clipper.dart';
 import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/db_services.dart';
-import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -79,20 +78,23 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: Image.asset(AppImages.guitar),
                       ),
                       SizedBox(height: height * 0.02),
-                      const CustomText(
-                        text: 'Sign in',
-                        color: AppColor.black,
-                        size: 36,
-                        fontWeight: FontWeight.w700,
+                      const Text(
+                        'Sign in',
+                        style: TextStyle(
+                          color: AppColor.black,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       SizedBox(height: height * 0.015),
                       const FittedBox(
-                        child: CustomText(
-                          text:
-                              'Enter registered email id below to get \nthe magic link for sign in.',
-                          color: AppColor.black,
-                          size: AppSize.large,
-                          fontWeight: FontWeight.w400,
+                        child: Text(
+                          'Enter registered email id below to get \nthe magic link for sign in.',
+                          style: TextStyle(
+                            color: AppColor.black,
+                            fontSize: AppSize.large,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                       SizedBox(height: height * 0.03),
@@ -141,13 +143,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               } else if (passWordController.text.length <= 4) {
                                 return 'Password is too short';
                               } else {
-                                bool result =
-                                    Validation.validatePassword(value);
-                                if (result) {
-                                  return null;
-                                } else {
-                                  return null;
-                                }
+                                return null;
                               }
                             },
                           ),

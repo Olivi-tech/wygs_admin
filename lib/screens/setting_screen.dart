@@ -1,7 +1,4 @@
-import 'dart:developer';
-import 'dart:typed_data';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -82,7 +79,7 @@ class _SettingScreenState extends State<SettingScreen> {
             } else if (snapshot.hasData) {
               var data = snapshot.data;
               return SingleChildScrollView(
-                child: CustomContainer(
+                child: Container(
                   height: height,
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -130,17 +127,21 @@ class _SettingScreenState extends State<SettingScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomText(
-                              text: 'Shakil Awan',
-                              color: AppColor.black,
-                              size: 24,
+                            Text(
+                              'Shakil Awan',
+                            style: TextStyle(
+                               color: AppColor.black,
+                              fontSize: 24,
                               fontWeight: FontWeight.w700,
                             ),
-                            CustomText(
-                              text: '@Shakil Awan',
-                              color: AppColor.indigo,
-                              size: AppSize.large,
+                            ),
+                            Text(
+                             '@Shakil Awan',
+                             style: TextStyle(
+                               color: AppColor.indigo,
+                            fontSize: AppSize.large,
                               fontWeight: FontWeight.w400,
+                             ),
                             )
                           ],
                         ),
@@ -158,11 +159,13 @@ class _SettingScreenState extends State<SettingScreen> {
                                   onTap: () {
                                     AppUtlis.storeImageToFirebase(context);
                                   },
-                                  child: const CustomText(
-                                    text: 'Change',
-                                    color: AppColor.blue,
-                                    size: AppSize.large,
+                                  child: const Text(
+                                    'Change',
+                                 style: TextStyle(
+                                     color: AppColor.blue,
+                                    fontSize: AppSize.large,
                                     fontWeight: FontWeight.w400,
+                                 ),
                                   ),
                                 ),
                                 const Gap(40),
@@ -170,46 +173,56 @@ class _SettingScreenState extends State<SettingScreen> {
                                   onTap: () {
                                     imagePickerProvider.deleteImage();
                                   },
-                                  child: const CustomText(
-                                    text: 'Delete',
-                                    color: AppColor.red,
-                                    size: AppSize.large,
+                                  child: const Text(
+                                    'Delete',
+                                   style: TextStyle(
+                                     color: AppColor.red,
+                                    fontSize: AppSize.large,
                                     fontWeight: FontWeight.w400,
+                                   ),
                                   ),
                                 )
                               ],
                             ),
                             const Padding(
                               padding: EdgeInsets.only(top: 10),
-                              child: CustomText(
-                                text: 'Edit Profile',
-                                color: AppColor.black,
-                                size: AppSize.xlarge,
+                              child: Text(
+                               'Edit Profile',
+                               style: TextStyle(
+                                 color: AppColor.black,
+                                fontSize: AppSize.xlarge,
                                 fontWeight: FontWeight.w700,
+                               ),
                               ),
                             ),
-                            const CustomText(
-                              text: 'Set up your personal information',
-                              color: AppColor.indigo,
-                              size: AppSize.large,
+                            const Text(
+                               'Set up your personal information',
+                             style: TextStyle(
+                               color: AppColor.indigo,
+                             fontSize: AppSize.large,
                               fontWeight: FontWeight.w400,
+                             ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 7),
                               child: Row(
                                 children: [
-                                  const CustomText(
-                                    text: 'Email ID',
-                                    color: AppColor.black,
-                                    size: AppSize.large,
+                                  const Text(
+                                     'Email ID',
+                                   style: TextStyle(
+                                     color: AppColor.black,
+                                   fontSize: AppSize.large,
                                     fontWeight: FontWeight.w500,
+                                   ),
                                   ),
                                   Gap(width * 0.3),
-                                  const CustomText(
-                                    text: 'Username',
-                                    color: AppColor.indigo,
-                                    size: AppSize.large,
+                                  const Text(
+                                     'Username',
+                                   style: TextStyle(
+                                     color: AppColor.indigo,
+                                    fontSize: AppSize.large,
                                     fontWeight: FontWeight.w500,
+                                   ),
                                   ),
                                 ],
                               ),
@@ -280,18 +293,22 @@ class _SettingScreenState extends State<SettingScreen> {
                               padding: const EdgeInsets.only(top: 7),
                               child: Row(
                                 children: [
-                                  const CustomText(
-                                    text: 'First Name',
-                                    color: AppColor.black,
-                                    size: AppSize.large,
+                                  const Text(
+                                  'First Name',
+                                  style: TextStyle(
+                                      color: AppColor.black,
+                                  fontSize: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
+                                  ),
                                   Gap(width * 0.285),
-                                  const CustomText(
-                                    text: 'Last Name',
-                                    color: AppColor.indigo,
-                                    size: AppSize.large,
+                                  const Text(
+                                    'Last Name',
+                                   style: TextStyle(
+                                     color: AppColor.indigo,
+                                    fontSize: AppSize.large,
                                     fontWeight: FontWeight.w500,
+                                   ),
                                   ),
                                 ],
                               ),
@@ -350,18 +367,22 @@ class _SettingScreenState extends State<SettingScreen> {
                               padding: const EdgeInsets.only(top: 7),
                               child: Row(
                                 children: [
-                                  const CustomText(
-                                    text: 'Phone No',
-                                    color: AppColor.black,
-                                    size: AppSize.large,
+                                  const Text(
+                                     'Phone No',
+                                  style: TextStyle(
+                                      color: AppColor.black,
+                                  fontSize: AppSize.large,
                                     fontWeight: FontWeight.w500,
                                   ),
+                                  ),
                                   Gap(width * 0.295),
-                                  const CustomText(
-                                    text: 'Address',
-                                    color: AppColor.indigo,
-                                    size: AppSize.large,
+                                  const Text(
+                                     'Address',
+                                   style: TextStyle(
+                                     color: AppColor.indigo,
+                                   fontSize: AppSize.large,
                                     fontWeight: FontWeight.w500,
+                                   ),
                                   ),
                                 ],
                               ),
@@ -431,7 +452,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                               BorderRadius.circular(10)),
                                       backgroundColor: AppColor.blue),
                                   onPressed: () async {
-                                    Utlis().toastMessage('Saved Successfully');
+                                  toastMessage('Saved Successfully');
 
                                     AdminModel adminModel = AdminModel(
                                         userName:

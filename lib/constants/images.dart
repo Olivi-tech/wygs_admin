@@ -12,6 +12,11 @@ class AppSvgs {
   static const search = 'assets/svgs/search.svg';
   static const delete = 'assets/svgs/delete.svg';
   static const danger = 'assets/svgs/danger.svg';
+  static const agree = 'assets/svgs/emoji_agree.svg';
+  static const angry = 'assets/svgs/emoji-angry.svg';
+  static const frown = 'assets/svgs/emoji-frown.svg';
+  static const laughing = 'assets/svgs/emoji-laughing.svg';
+  static const neutral = 'assets/svgs/emoji-neutral.svg';
 }
 
 class AppImages {

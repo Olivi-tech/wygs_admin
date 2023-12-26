@@ -5,7 +5,7 @@ import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/db_services.dart';
 import 'package:guitar_songs/model/model.dart';
 import 'package:guitar_songs/providers/providers.dart';
-import 'package:guitar_songs/widgets/custom_dialouge.dart';
+import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,8 @@ class UserManagementScreen extends StatelessWidget {
   UserManagementScreen({super.key, Key? ey});
 
   Stream<List<UserModel>> userModelStream =
-      FirestoreServices.fetchUserManagement();
+      FirestoreServices.fetchCollectionData(
+          'userManagement', (data) => UserModel.fromMap(data));
   late UserCheckProvider userCheckProvider;
 
   @override
@@ -81,17 +82,19 @@ class UserManagementScreen extends StatelessWidget {
                   ),
                   const Padding(
                     padding: EdgeInsets.only(top: 15, left: 25),
-                    child: CustomText(
-                      text: 'User’s Management',
-                      color: AppColor.blackish,
-                      size: AppSize.large,
-                      fontWeight: FontWeight.w600,
+                    child: Text(
+                      'User’s Management',
+                      style: TextStyle(
+                        color: AppColor.blackish,
+                        fontSize: AppSize.large,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 20, right: 20, top: 20, bottom: 30),
-                    child: CustomContainer(
+                    child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: AppColor.white,
@@ -113,7 +116,7 @@ class UserManagementScreen extends StatelessWidget {
                                       : AppColor.white),
                             ),
                             columnSpacing:
-                                MediaQuery.of(context).size.width * 0.09,
+                                MediaQuery.of(context).size.width * 0.08,
                             columns: [
                               DataColumn(
                                 label: Row(
@@ -155,50 +158,26 @@ class UserManagementScreen extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(width: 10),
-                                    const CustomText(
-                                      text: 'Name',
-                                      color: AppColor.indigo,
-                                      size: AppSize.small,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    const CustomTextDataColumn(text: 'Name'),
                                   ],
                                 ),
                               ),
                               const DataColumn(
-                                label: CustomText(
-                                  text: 'Email ID',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                label: CustomTextDataColumn(text: 'Email ID'),
                               ),
                               const DataColumn(
                                 label: Flexible(
-                                  child: CustomText(
-                                    text: 'Joining Date',
-                                    color: AppColor.indigo,
-                                    size: AppSize.small,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  child: CustomTextDataColumn(
+                                      text: 'Joining Date'),
                                 ),
                               ),
                               const DataColumn(
-                                label: CustomText(
-                                  text: 'Last Login',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                label: CustomTextDataColumn(text: 'Last Login'),
                               ),
                               DataColumn(
                                 label: Row(
                                   children: [
-                                    const CustomText(
-                                      text: 'Status',
-                                      color: AppColor.indigo,
-                                      size: AppSize.small,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    const CustomTextDataColumn(text: 'Status'),
                                     SizedBox(width: width * 0.04),
                                     Consumer<UserCheckProvider>(
                                       builder: (context, value, child) {
@@ -214,7 +193,7 @@ class UserManagementScreen extends StatelessWidget {
                                                             5)),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    customDialouge(
+                                                    customDialog(
                                                       context,
                                                     );
                                                   },
@@ -292,7 +271,7 @@ class UserManagementScreen extends StatelessWidget {
                                           ),
                                         ),
                                         const SizedBox(width: 10),
-                                        CustomContainer(
+                                        Container(
                                           decoration: BoxDecoration(
                                             color:
                                                 getNameColor(model.name ?? ''),
@@ -309,45 +288,28 @@ class UserManagementScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 5),
                                         Flexible(
-                                          child: CustomText(
+                                          child: CustomTextDataRow(
                                             text: "${model.name}",
-                                            color: AppColor.indigo
-                                                .withOpacity(0.9),
-                                            size: AppSize.xsmall,
-                                            fontWeight: FontWeight.w400,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   DataCell(
-                                    CustomText(
-                                      text: "${model.email}",
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    CustomTextDataRow(text: "${model.email}"),
                                   ),
                                   DataCell(
-                                    CustomText(
-                                      text: '${model.joiningDate}',
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    CustomTextDataRow(
+                                        text: "${model.joiningDate}"),
                                   ),
                                   DataCell(
-                                    CustomText(
-                                      text: '${model.lastLogin}',
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    CustomTextDataRow(
+                                        text: "${model.lastLogin}"),
                                   ),
                                   DataCell(
                                     Row(
                                       children: [
-                                        CustomContainer(
+                                        Container(
                                           decoration: BoxDecoration(
                                             color: getStatusColor(
                                                 "${model.status}"),
@@ -357,12 +319,8 @@ class UserManagementScreen extends StatelessWidget {
                                           height: 23,
                                           width: 77,
                                           child: Center(
-                                            child: CustomText(
-                                              text: "${model.status}",
-                                              color: AppColor.white,
-                                              size: AppSize.xsmall,
-                                              fontWeight: FontWeight.w400,
-                                            ),
+                                            child: CustomTextDataRow(
+                                                text: "${model.status}"),
                                           ),
                                         ),
                                         Padding(
@@ -395,7 +353,7 @@ class UserManagementScreen extends StatelessWidget {
                                                               child:
                                                                   GestureDetector(
                                                                 onTap: () {
-                                                                  customDialouge(
+                                                                  customDialog(
                                                                     context,
                                                                   );
                                                                 },
@@ -506,7 +464,7 @@ class CustomContainerWithIconAndText extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     double height = size.height;
     double width = size.width;
-    return CustomContainer(
+    return Container(
       height: height * 0.1,
       width: width * 0.27,
       decoration: BoxDecoration(
@@ -518,7 +476,7 @@ class CustomContainerWithIconAndText extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 7),
-            child: CustomContainer(
+            child: Container(
               height: height * 0.07,
               width: 40,
               decoration: BoxDecoration(
@@ -534,11 +492,13 @@ class CustomContainerWithIconAndText extends StatelessWidget {
           SizedBox(width: width * 0.01),
           Expanded(
             child: FittedBox(
-              child: CustomText(
-                text: value,
-                color: AppColor.midnightBlue,
-                size: AppSize.xlarge,
-                fontWeight: FontWeight.w600,
+              child: Text(
+                value,
+                style: const TextStyle(
+                  color: AppColor.midnightBlue,
+                  fontSize: AppSize.xlarge,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -546,11 +506,13 @@ class CustomContainerWithIconAndText extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0, right: 10),
               child: FittedBox(
-                child: CustomText(
-                  text: label,
-                  size: AppSize.large,
-                  color: AppColor.midnightBlue,
-                  fontWeight: FontWeight.w400,
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: AppSize.large,
+                    color: AppColor.midnightBlue,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
             ),

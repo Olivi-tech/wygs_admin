@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:guitar_songs/model/model.dart';
 import 'package:guitar_songs/utlis/utlis.dart';
-import 'dart:developer';  
+import 'dart:developer';
 
 class AuthServices {
   static Future<void> login(
@@ -14,7 +14,7 @@ class AuthServices {
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       if (FirebaseAuth.instance.currentUser != null) {
-        Utlis().toastMessage('Successfully SignIn');
+        toastMessage('Successfully SignIn');
         Future.delayed(const Duration(milliseconds: 500))
             .then((value) => Navigator.of(context).pushNamedAndRemoveUntil(
                   AppRoutes.progressManagement,
@@ -24,7 +24,7 @@ class AuthServices {
         log('Not Login');
       }
     }).onError((error, stackTrace) {
-      Utlis().toastMessage('Error');
+      toastMessage('Error');
     });
   }
 
@@ -40,7 +40,7 @@ class AuthServices {
     }
   }
 
-   static Future<void> updateAdminDetails(
+  static Future<void> updateAdminDetails(
       {required AdminModel adminModel}) async {
     try {
       DocumentReference users = FirebaseFirestore.instance
@@ -62,8 +62,6 @@ class AuthServices {
     Map<String, dynamic> mapData = querySnapshot.docs.first.data();
     return AdminModel.fromMap(mapData);
   }
-
-
 
   static Future<void> storeAdminData(
       {required String email, required controller}) async {

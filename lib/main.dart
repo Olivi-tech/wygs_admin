@@ -17,11 +17,11 @@ void main() async {
       appId: "1:166719206090:web:8e843e866afbd13cd17a33",
     ),
   );
-  runApp(const MyApp());
+  runApp(const GuitarApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class GuitarApp extends StatelessWidget {
+  const GuitarApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +53,6 @@ class MyApp extends StatelessWidget {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             onGenerateRoute: onGenerateRoute,
-            home: HomeScreen()));
+            home: SignInScreen()));
   }
 }

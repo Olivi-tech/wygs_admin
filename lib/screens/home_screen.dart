@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomContainer(
+                  Container(
                     decoration: BoxDecoration(
                       color: AppColor.white,
                       border: Border.all(
@@ -67,10 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         const Padding(
                           padding: EdgeInsets.only(left: 15.0),
-                          child: CustomText(
-                            text: 'Admin Panel',
-                            color: Color(0xFF424D57),
-                            size: 16,
+                          child: Text(
+                            'Admin Panel',
+                            style: TextStyle(
+                              color: Color(0xFF424D57),
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                         Row(
@@ -94,29 +96,33 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: CustomContainer(
+                              child: Container(
                                 decoration: BoxDecoration(
                                     color: const Color(0x190174BE),
                                     borderRadius: BorderRadius.circular(100)),
                                 height: height * 0.07,
                                 width: 40,
                                 child: const Center(
-                                  child: CustomText(
-                                    text: 'SA',
-                                    color: Color(0xFF0174BE),
-                                    size: 12,
-                                    fontWeight: FontWeight.w600,
+                                  child: Text(
+                                    'SA',
+                                    style: TextStyle(
+                                      color: Color(0xFF0174BE),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                             const Padding(
                               padding: EdgeInsets.only(right: 50),
-                              child: CustomText(
-                                text: 'Shakeel Awan',
-                                color: Color(0xFF0C356A),
-                                size: 15,
-                                fontWeight: FontWeight.w500,
+                              child: Text(
+                                'Shakeel Awan',
+                                style: TextStyle(
+                                  color: Color(0xFF0C356A),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             )
                           ],
@@ -138,11 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? UserManagementScreen()
                                 : providerIndex.getIndex == 2
                                     ? CommunityManagementScreen()
-                                    : providerIndex.getIndex == 3
-                                        ? GuestManagementScreen()
-                                        : providerIndex.getIndex == 4
-                                            ? BillingManagementScreen()
-                                            : const SettingScreen();
+                                    // : providerIndex.getIndex == 3
+                                    //     ? GuestManagementScreen()
+                                    : providerIndex.getIndex == 4
+                                        ? BillingManagementScreen()
+                                        : const SettingScreen();
                       }),
                     ),
                   )

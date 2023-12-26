@@ -1,4 +1,4 @@
 class AppRoutes {
-  static const signin = '/SignInScreen';
-  static const progressManagement = '/ProgressManagementScreen';
+  static const signin = '/signInScreen';
+  static const progressManagement = '/progressManagementScreen';
 }

@@ -5,7 +5,7 @@ import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/db_services.dart';
 import 'package:guitar_songs/model/community_model.dart';
 import 'package:guitar_songs/providers/providers.dart';
-import 'package:guitar_songs/widgets/custom_dialouge.dart';
+import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,8 @@ class CommunityManagementScreen extends StatelessWidget {
   CommunityManagementScreen({super.key});
 
   Stream<List<CommunityModel>> communityStream =
-      FirestoreServices.fetchCommunityManagement();
+      FirestoreServices.fetchCollectionData(
+          'communityManagement', (data) => CommunityModel.fromMap(data));
   late CommunityCheckProvider communityCheckProvider;
 
   @override
@@ -39,17 +40,19 @@ class CommunityManagementScreen extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 15, left: 25),
-                  child: CustomText(
-                    text: 'Community’ Post Management',
-                    color: AppColor.blackish,
-                    size: AppSize.large,
-                    fontWeight: FontWeight.w600,
+                  child: Text(
+                    'Community’ Post Management',
+                    style: TextStyle(
+                      color: AppColor.blackish,
+                      fontSize: AppSize.large,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 20, right: 20, top: 20, bottom: 30),
-                  child: CustomContainer(
+                  child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppColor.white,
@@ -114,74 +117,43 @@ class CommunityManagementScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                const CustomText(
-                                  text: 'Image',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                const CustomTextDataColumn(text: 'Image')
                               ],
                             )),
                             const DataColumn(
                               label: Expanded(
-                                child: CustomText(
-                                  text: 'Posted by',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                child: CustomTextDataColumn(text: 'Posted by'),
                               ),
                             ),
                             const DataColumn(
                               label: Expanded(
-                                child: CustomText(
-                                  text: 'Description',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                child:
+                                    CustomTextDataColumn(text: 'Description'),
                               ),
                             ),
                             const DataColumn(
                               label: Expanded(
-                                child: CustomText(
-                                  text: 'Posting Date',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                child:
+                                    CustomTextDataColumn(text: 'Posting Date'),
                               ),
                             ),
                             const DataColumn(
                               label: Expanded(
-                                child: CustomText(
-                                  text: 'No of Likes',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                child:
+                                    CustomTextDataColumn(text: 'No of Likes'),
                               ),
                             ),
                             const DataColumn(
                               label: Expanded(
-                                child: CustomText(
-                                  text: 'No of Comments',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                child: CustomTextDataColumn(
+                                    text: 'No of Comments'),
                               ),
                             ),
                             DataColumn(
                               label: Expanded(
                                 child: Row(
                                   children: [
-                                    const CustomText(
-                                      text: 'Status',
-                                      color: AppColor.indigo,
-                                      size: AppSize.small,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    const CustomTextDataColumn(text: 'Status'),
                                     SizedBox(width: width * 0.03),
                                     Consumer<CommunityCheckProvider>(
                                       builder: (context, value, child) {
@@ -197,7 +169,7 @@ class CommunityManagementScreen extends StatelessWidget {
                                                             5)),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    customDialouge(context);
+                                                    customDialog(context);
                                                   },
                                                   child: Padding(
                                                     padding:
@@ -283,52 +255,25 @@ class CommunityManagementScreen extends StatelessWidget {
                                   ),
                                 ),
                                 DataCell(
-                                  CustomText(
-                                    text: '${model.postBy}',
-                                    color: AppColor.indigo.withOpacity(0.9),
-                                    size: AppSize.xsmall,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  CustomTextDataRow(text: '${model.postBy}'),
                                 ),
                                 DataCell(
-                                  CustomText(
-                                    maxLine: 3,
-                                    softWrap: true,
-                                    text: '${model.description}',
-                                    color: AppColor.indigo.withOpacity(0.9),
-                                    size: AppSize.xsmall,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  CustomTextDataRow(
+                                      text: '${model.description}', maxLine: 3),
                                 ),
                                 DataCell(
-                                  CustomText(
-                                    text: '${model.date}',
-                                    color: const Color.fromARGB(255, 72, 50, 67)
-                                        .withOpacity(0.9),
-                                    size: AppSize.xsmall,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  CustomTextDataRow(text: '${model.date}'),
                                 ),
                                 DataCell(
-                                  CustomText(
-                                    text: model.likes!,
-                                    color: AppColor.indigo.withOpacity(0.9),
-                                    size: AppSize.xsmall,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  CustomTextDataRow(text: '${model.likes}'),
                                 ),
                                 DataCell(
-                                  CustomText(
-                                    text: model.comments!,
-                                    color: AppColor.indigo.withOpacity(0.9),
-                                    size: AppSize.xsmall,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                  CustomTextDataRow(text: '${model.comments}'),
                                 ),
                                 DataCell(
                                   Row(
                                     children: [
-                                      CustomContainer(
+                                      Container(
                                         decoration: BoxDecoration(
                                           color: getColorStatus(model.status!),
                                           borderRadius:
@@ -337,13 +282,14 @@ class CommunityManagementScreen extends StatelessWidget {
                                         height: 23,
                                         width: 77,
                                         child: Center(
-                                          child: CustomText(
-                                            text: model.status!,
+                                            child: Text(
+                                          model.status!,
+                                          style: const TextStyle(
                                             color: AppColor.white,
-                                            size: AppSize.xsmall,
+                                            fontSize: AppSize.xsmall,
                                             fontWeight: FontWeight.w400,
                                           ),
-                                        ),
+                                        )),
                                       ),
                                       Padding(
                                         padding:
@@ -373,7 +319,7 @@ class CommunityManagementScreen extends StatelessWidget {
                                                                 child:
                                                                     GestureDetector(
                                                                   onTap: () {
-                                                                    customDialouge(
+                                                                    customDialog(
                                                                         context);
                                                                   },
                                                                   child:

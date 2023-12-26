@@ -26,10 +26,12 @@ class CustomButton extends StatelessWidget {
             backgroundColor: AppColor.blue),
         onPressed: onPressed,
         child: FittedBox(
-          child: CustomText(
-            text: text,
-            size: textSize,
+          child: Text(
+           text,
+           style: TextStyle(
+            fontSize: textSize,
             color: AppColor.white,
+           ),
           ),
         ));
   }

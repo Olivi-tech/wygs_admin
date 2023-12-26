@@ -5,8 +5,9 @@ import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/firestore_services.dart';
 import 'package:guitar_songs/model/progress_model.dart';
 import 'package:guitar_songs/providers/progress_screen_provider.dart';
-import 'package:guitar_songs/widgets/custom_dialouge.dart';
-import 'package:guitar_songs/widgets/widgets.dart';
+import 'package:guitar_songs/utlis/utlis.dart';
+import 'package:guitar_songs/widgets/custom_text_data_column.dart';
+import 'package:guitar_songs/widgets/custom_text_data_row.dart';
 import 'package:provider/provider.dart';
 
 class ProgressManagementScreen extends StatefulWidget {
@@ -19,14 +20,25 @@ class ProgressManagementScreen extends StatefulWidget {
 
 class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
   Stream<List<ProgressModel>> progressModelStream =
-      FirestoreServices.fetchProgressManagement();
+      FirestoreServices.fetchCollectionData(
+          'progressManagement', (data) => ProgressModel.fromMap(data));
   late ProgressCheckProvider progressCheckProvider;
+  late ValueNotifier<bool> isExpanded;
+  late TextEditingController feedbackController;
 
   @override
   void initState() {
     progressCheckProvider =
         Provider.of<ProgressCheckProvider>(context, listen: false);
+    feedbackController = TextEditingController();
+    isExpanded = ValueNotifier<bool>(false);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    feedbackController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,17 +63,19 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                 SizedBox(height: height * 0.03),
                 const Padding(
                   padding: EdgeInsets.only(left: 25),
-                  child: CustomText(
-                    text: 'Progress Management',
-                    color: AppColor.blackish,
-                    size: AppSize.large,
-                    fontWeight: FontWeight.w600,
+                  child: Text(
+                    'Progress Management',
+                    style: TextStyle(
+                      color: AppColor.blackish,
+                      fontSize: AppSize.large,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 20, right: 20, top: 20, bottom: 30),
-                  child: CustomContainer(
+                  child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppColor.white,
@@ -128,74 +142,35 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                const CustomText(
-                                  text: 'Name',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                const CustomTextDataColumn(text: 'Name'),
                               ],
                             ),
                           ),
                           const DataColumn(
-                            label: CustomText(
-                              text: 'Lead Guitar',
-                              color: AppColor.indigo,
-                              size: AppSize.small,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            label: CustomTextDataColumn(text: 'Lead Guitar'),
                           ),
                           const DataColumn(
                             label: Flexible(
-                              child: CustomText(
-                                text: 'Rhythm Guitar',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w400,
-                              ),
+                              child:
+                                  CustomTextDataColumn(text: 'Rhythm Guitar'),
                             ),
                           ),
                           const DataColumn(
-                            label: CustomText(
-                              text: 'Bass Guitar',
-                              color: AppColor.indigo,
-                              size: AppSize.small,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            label: CustomTextDataColumn(text: 'Bass Guitar'),
                           ),
                           const DataColumn(
-                            label: CustomText(
-                              text: 'Drums',
-                              color: AppColor.indigo,
-                              size: AppSize.small,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            label: CustomTextDataColumn(text: 'Drums'),
                           ),
                           const DataColumn(
-                            label: CustomText(
-                              text: 'Vocal/Mic',
-                              color: AppColor.indigo,
-                              size: AppSize.small,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            label: CustomTextDataColumn(text: 'Vocal/Mic'),
                           ),
                           const DataColumn(
-                            label: CustomText(
-                              text: 'Keyborad',
-                              color: AppColor.indigo,
-                              size: AppSize.small,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            label: CustomTextDataColumn(text: 'Keyboard'),
                           ),
                           DataColumn(
                             label: Row(
                               children: [
-                                const CustomText(
-                                  text: 'Piano',
-                                  color: AppColor.indigo,
-                                  size: AppSize.small,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                const CustomTextDataColumn(text: 'Piano'),
                                 SizedBox(width: width * 0.015),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10.0),
@@ -212,9 +187,8 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                                       BorderRadius.circular(5)),
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  customDialouge(
-                                                    context,
-                                                  );
+                                                  feedbackDialog(context,
+                                                      feedbackController);
                                                 },
                                                 child: Padding(
                                                   padding:
@@ -286,7 +260,7 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                       ),
                                     ),
                                     const SizedBox(width: 10),
-                                    CustomContainer(
+                                    Container(
                                       decoration: BoxDecoration(
                                         color: getNameColor('${model.name}'),
                                         borderRadius: BorderRadius.circular(36),
@@ -301,41 +275,51 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                     ),
                                     const SizedBox(width: 5),
                                     Flexible(
-                                      child: CustomText(
-                                        text: "${model.name}",
-                                        color: AppColor.indigo.withOpacity(0.9),
-                                        size: AppSize.xsmall,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                      child: CustomTextDataRow(
+                                          text: '${model.name}'),
                                     ),
                                   ],
                                 ),
                               ),
                               DataCell(
                                 InkWell(
-                                  onTap: () {
-                                  //  print('${model.name}');
-                                  },
-                                  child: CustomContainer(
-                                    decoration: BoxDecoration(
-                                      color: AppColor.skyBlue,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    height: 23,
-                                    width: 50,
-                                    child: Center(
-                                      child: CustomText(
-                                        text: "${model.leadGuitar}",
-                                        color: AppColor.indigo.withOpacity(0.9),
-                                        size: AppSize.xsmall,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                    onTap: () {
+                                      // isExpanded.value = isExpanded.value;
+                                    },
+                                    child: isExpanded.value
+                                        ? SizedBox(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            child: Column(
+                                              children: [
+                                                CustomTextDataRow(
+                                                    text:
+                                                        '${model.leadGuitar}'),
+                                                CustomTextDataRow(
+                                                    text:
+                                                        '${model.leadGuitar}'),
+                                                CustomTextDataRow(
+                                                    text:
+                                                        '${model.leadGuitar}'),
+                                              ],
+                                            ),
+                                          )
+                                        : Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColor.skyBlue,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            height: 23,
+                                            width: 50,
+                                            child: Center(
+                                              child: CustomTextDataRow(
+                                                  text: '${model.leadGuitar}'),
+                                            ),
+                                          )),
                               ),
                               DataCell(
-                                CustomContainer(
+                                Container(
                                   decoration: BoxDecoration(
                                     color: AppColor.skyBlue,
                                     borderRadius: BorderRadius.circular(12),
@@ -343,17 +327,13 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                   height: 23,
                                   width: 50,
                                   child: Center(
-                                    child: CustomText(
-                                      text: "${model.rhythmGuitar}",
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    child: CustomTextDataRow(
+                                        text: '${model.rhythmGuitar}'),
                                   ),
                                 ),
                               ),
                               DataCell(
-                                CustomContainer(
+                                Container(
                                   decoration: BoxDecoration(
                                     color: AppColor.skyBlue,
                                     borderRadius: BorderRadius.circular(12),
@@ -361,17 +341,13 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                   height: 23,
                                   width: 50,
                                   child: Center(
-                                    child: CustomText(
-                                      text: "${model.bassGuitar}",
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    child: CustomTextDataRow(
+                                        text: '${model.bassGuitar}'),
                                   ),
                                 ),
                               ),
                               DataCell(
-                                CustomContainer(
+                                Container(
                                   decoration: BoxDecoration(
                                     color: AppColor.skyBlue,
                                     borderRadius: BorderRadius.circular(12),
@@ -379,17 +355,13 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                   height: 23,
                                   width: 50,
                                   child: Center(
-                                    child: CustomText(
-                                      text: "${model.drums}",
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    child: CustomTextDataRow(
+                                        text: '${model.drums}'),
                                   ),
                                 ),
                               ),
                               DataCell(
-                                CustomContainer(
+                                Container(
                                   decoration: BoxDecoration(
                                     color: AppColor.skyBlue,
                                     borderRadius: BorderRadius.circular(12),
@@ -397,17 +369,13 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                   height: 23,
                                   width: 50,
                                   child: Center(
-                                    child: CustomText(
-                                      text: "${model.mic}",
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    child:
+                                        CustomTextDataRow(text: '${model.mic}'),
                                   ),
                                 ),
                               ),
                               DataCell(
-                                CustomContainer(
+                                Container(
                                   decoration: BoxDecoration(
                                     color: AppColor.skyBlue,
                                     borderRadius: BorderRadius.circular(12),
@@ -415,19 +383,15 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                   height: 23,
                                   width: 50,
                                   child: Center(
-                                    child: CustomText(
-                                      text: "${model.keyboard}",
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    child: CustomTextDataRow(
+                                        text: '${model.keyboard}'),
                                   ),
                                 ),
                               ),
                               DataCell(
                                 Row(
                                   children: [
-                                    CustomContainer(
+                                    Container(
                                       decoration: BoxDecoration(
                                         color: AppColor.skyBlue,
                                         borderRadius: BorderRadius.circular(12),
@@ -435,13 +399,8 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                       height: 23,
                                       width: 50,
                                       child: Center(
-                                        child: CustomText(
-                                          text: "${model.piano}",
-                                          color:
-                                              AppColor.indigo.withOpacity(0.9),
-                                          size: AppSize.xsmall,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                                        child: CustomTextDataRow(
+                                            text: '${model.piano}'),
                                       ),
                                     ),
                                     Padding(
@@ -470,7 +429,7 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                                           child:
                                                               GestureDetector(
                                                             onTap: () {
-                                                              customDialouge(
+                                                              customDialog(
                                                                 context,
                                                               );
                                                             },

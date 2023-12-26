@@ -5,7 +5,7 @@ import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/db_services/db_services.dart';
 import 'package:guitar_songs/model/model.dart';
 import 'package:guitar_songs/providers/providers.dart';
-import 'package:guitar_songs/widgets/custom_dialouge.dart';
+import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,8 @@ class BillingManagementScreen extends StatelessWidget {
   BillingManagementScreen({super.key});
 
   Stream<List<BillingModel>> billingStream =
-      FirestoreServices.fetchBillingManagement();
+      FirestoreServices.fetchCollectionData(
+          'billingManagement', (data) => BillingModel.fromMap(data));
   late BillingCheckProvider billingCheckProvider;
 
   @override
@@ -42,17 +43,19 @@ class BillingManagementScreen extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 15, left: 25),
-                  child: CustomText(
-                    text: 'User’s Subscription Management',
-                    color: AppColor.blackish,
-                    size: AppSize.large,
-                    fontWeight: FontWeight.w600,
+                  child: Text(
+                    'User’s Subscription Management',
+                    style: TextStyle(
+                      color: AppColor.indigo,
+                      fontSize: AppSize.small,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 20, right: 20, top: 20, bottom: 30),
-                  child: CustomContainer(
+                  child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppColor.white,
@@ -115,64 +118,31 @@ class BillingManagementScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              const CustomText(
-                                text: 'Invoice ID',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              const CustomTextDataColumn(text: 'Invoice ID'),
                             ],
                           )),
                           const DataColumn(
                             label: Expanded(
-                              child: CustomText(
-                                text: 'Name',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                                child: CustomTextDataColumn(text: 'Name')),
                           ),
                           const DataColumn(
                             label: Expanded(
-                              child: CustomText(
-                                text: 'Subcription Plan',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                                child: CustomTextDataColumn(
+                                    text: 'Subcription Plan')),
                           ),
                           const DataColumn(
                             label: Expanded(
-                              child: CustomText(
-                                text: 'Type',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                                child: CustomTextDataColumn(text: 'Type')),
                           ),
                           const DataColumn(
                             label: Expanded(
-                              child: CustomText(
-                                text: 'Price',
-                                color: AppColor.indigo,
-                                size: AppSize.small,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                                child: CustomTextDataColumn(text: 'Price')),
                           ),
                           DataColumn(
                             label: Expanded(
                               child: Row(
                                 children: [
-                                  const CustomText(
-                                    text: 'Status',
-                                    color: AppColor.indigo,
-                                    size: AppSize.small,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  const CustomTextDataColumn(text: 'Status'),
                                   SizedBox(
                                     width: width * 0.02,
                                   ),
@@ -192,11 +162,12 @@ class BillingManagementScreen extends StatelessWidget {
                                                             5)),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    customDialouge(context);
+                                                    customDialog(context);
                                                   },
                                                   child: Padding(
                                                     padding:
-                                                        const EdgeInsets.all(3.0),
+                                                        const EdgeInsets.all(
+                                                            3.0),
                                                     child: SvgPicture.asset(
                                                         AppSvgs.delete),
                                                   ),
@@ -264,52 +235,27 @@ class BillingManagementScreen extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(width: 10),
-                                    CustomText(
-                                      text: model.id ?? '',
-                                      color: AppColor.indigo.withOpacity(0.9),
-                                      size: AppSize.xsmall,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    CustomTextDataRow(text: '${model.id}'),
                                   ],
                                 ),
                               ),
                               DataCell(
-                                CustomText(
-                                  text: model.name ?? '',
-                                  color: AppColor.indigo.withOpacity(0.9),
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                CustomTextDataRow(text: '${model.name}'),
                               ),
                               DataCell(
-                                CustomText(
-                                  text: model.subscription ?? '',
-                                  color: AppColor.indigo.withOpacity(0.9),
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                CustomTextDataRow(
+                                    text: '${model.subscription}'),
                               ),
                               DataCell(
-                                CustomText(
-                                  text: model.type ?? '',
-                                  color: const Color.fromARGB(255, 72, 50, 67)
-                                      .withOpacity(0.9),
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                CustomTextDataRow(text: '${model.type}'),
                               ),
                               DataCell(
-                                CustomText(
-                                  text: model.price ?? '',
-                                  color: AppColor.indigo.withOpacity(0.9),
-                                  size: AppSize.xsmall,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                CustomTextDataRow(text: '${model.price}'),
                               ),
                               DataCell(
                                 Row(
                                   children: [
-                                    CustomContainer(
+                                    Container(
                                       decoration: BoxDecoration(
                                         color:
                                             getStatusColor(model.status ?? ''),
@@ -318,12 +264,8 @@ class BillingManagementScreen extends StatelessWidget {
                                       height: 23,
                                       width: 77,
                                       child: Center(
-                                        child: CustomText(
-                                          text: model.status ?? '',
-                                          color: AppColor.white,
-                                          size: AppSize.xsmall,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                                        child: CustomTextDataRow(
+                                            text: '${model.status}'),
                                       ),
                                     ),
                                     Padding(
@@ -349,9 +291,11 @@ class BillingManagementScreen extends StatelessWidget {
                                                                   BorderRadius
                                                                       .circular(
                                                                           5)),
-                                                          child: GestureDetector(
+                                                          child:
+                                                              GestureDetector(
                                                             onTap: () {
-                                                              customDialouge(context);
+                                                              customDialog(
+                                                                  context);
                                                             },
                                                             child: Padding(
                                                               padding:

@@ -205,7 +205,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     required String text,
     required Color textColor,
   }) {
-    return CustomContainer(
+    return Container(
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -222,11 +222,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: CustomText(
-              text: text,
-              color: textColor,
-              size: AppSize.large,
-              fontWeight: FontWeight.w500,
+            child: Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontSize: AppSize.large,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           )
         ],
