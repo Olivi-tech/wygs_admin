@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Size size = MediaQuery.of(context).size;
     double height = size.height;
     double width = size.width;
-    if (width < 1100) {
+    if (width < 900) {
       isDrawerVisible = false;
     } else {
       isDrawerVisible = true;

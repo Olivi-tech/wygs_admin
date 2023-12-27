@@ -53,6 +53,6 @@ class GuitarApp extends StatelessWidget {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             onGenerateRoute: onGenerateRoute,
-            home: SignInScreen()));
+            home: HomeScreen()));
   }
 }

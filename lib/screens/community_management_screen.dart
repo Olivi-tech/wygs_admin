@@ -21,7 +21,7 @@ class CommunityManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    double height = size.height;
+
     double width = size.width;
     communityCheckProvider =
         Provider.of<CommunityCheckProvider>(context, listen: false);
@@ -74,7 +74,7 @@ class CommunityManagementScreen extends StatelessWidget {
                                     : AppColor.white),
                           ),
                           columnSpacing:
-                              MediaQuery.of(context).size.width * .05,
+                              MediaQuery.of(context).size.width * 0.054,
                           columns: [
                             DataColumn(
                                 label: Row(
@@ -244,52 +244,43 @@ class CommunityManagementScreen extends StatelessWidget {
                                       SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: Image.asset(AppImages.community),
+                                        child: Image.network(model.image!),
                                       )
-                                      // SizedBox(
-                                      //   height: 20,
-                                      //   width: 20,
-                                      //   child: Image.network(model.image!),
-                                      // )
                                     ],
                                   ),
                                 ),
                                 DataCell(
-                                  CustomTextDataRow(text: '${model.postBy}'),
+                                  CustomTextDataRow(text: model.postBy ?? ''),
                                 ),
                                 DataCell(
                                   CustomTextDataRow(
-                                      text: '${model.description}', maxLine: 3),
+                                      text: model.description ?? '',
+                                      maxLine: 3),
                                 ),
                                 DataCell(
-                                  CustomTextDataRow(text: '${model.date}'),
+                                  CustomTextDataRow(text: model.date ?? ''),
                                 ),
                                 DataCell(
-                                  CustomTextDataRow(text: '${model.likes}'),
+                                  CustomTextDataRow(text: model.likes ?? ''),
                                 ),
                                 DataCell(
-                                  CustomTextDataRow(text: '${model.comments}'),
+                                  CustomTextDataRow(text: model.comments ?? ''),
                                 ),
                                 DataCell(
                                   Row(
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: getColorStatus(model.status!),
+                                          color: AppColorUtlis.getStatusColor(
+                                              model.status!),
                                           borderRadius:
                                               BorderRadius.circular(12),
                                         ),
                                         height: 23,
                                         width: 77,
                                         child: Center(
-                                            child: Text(
-                                          model.status!,
-                                          style: const TextStyle(
-                                            color: AppColor.white,
-                                            fontSize: AppSize.xsmall,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        )),
+                                            child: CustomTextDataRow(
+                                                text: model.status!)),
                                       ),
                                       Padding(
                                         padding:
@@ -356,18 +347,5 @@ class CommunityManagementScreen extends StatelessWidget {
         }
       },
     );
-  }
-}
-
-Color getColorStatus(String status) {
-  switch (status) {
-    case 'Active':
-      return AppColor.green;
-    case 'In Progress':
-      return AppColor.blue;
-    case 'Paused':
-      return AppColor.red;
-    default:
-      return AppColor.indigo.withOpacity(0.9);
   }
 }

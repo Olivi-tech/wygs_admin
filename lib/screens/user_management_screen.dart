@@ -116,7 +116,7 @@ class UserManagementScreen extends StatelessWidget {
                                       : AppColor.white),
                             ),
                             columnSpacing:
-                                MediaQuery.of(context).size.width * 0.08,
+                                MediaQuery.of(context).size.width * 0.115,
                             columns: [
                               DataColumn(
                                 label: Row(
@@ -273,8 +273,8 @@ class UserManagementScreen extends StatelessWidget {
                                         const SizedBox(width: 10),
                                         Container(
                                           decoration: BoxDecoration(
-                                            color:
-                                                getNameColor(model.name ?? ''),
+                                            color: AppColorUtlis.getNameColor(
+                                                model.name ?? ''),
                                             borderRadius:
                                                 BorderRadius.circular(36),
                                           ),
@@ -311,7 +311,7 @@ class UserManagementScreen extends StatelessWidget {
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                            color: getStatusColor(
+                                            color: AppColorUtlis.getStatusColor(
                                                 "${model.status}"),
                                             borderRadius:
                                                 BorderRadius.circular(12),
@@ -389,59 +389,6 @@ class UserManagementScreen extends StatelessWidget {
             return const Text('');
           }
         });
-  }
-
-  Color getStatusColor(String status) {
-    switch (status) {
-      case 'Completed':
-        return AppColor.green;
-      case 'In Progress':
-        return AppColor.blue;
-      case 'Paused':
-        return AppColor.red;
-      default:
-        return AppColor.seaGreen.withOpacity(0.9);
-    }
-  }
-
-  Color getNameColor(String name) {
-    String firstLetter = name.isNotEmpty ? name[0].trim() : "";
-    switch (firstLetter) {
-      case "A":
-        return AppColor.lightBlue;
-      case "B":
-        return AppColor.orange.withOpacity(0.7);
-      case "C":
-        return AppColor.seaGreen;
-      case "D":
-        return AppColor.blue;
-      case "E":
-        return AppColor.lightBlue;
-      case "F":
-        return AppColor.orange.withOpacity(0.7);
-      case "G":
-        return AppColor.seaGreen;
-      case "H":
-        return AppColor.blue;
-      case "I":
-        return AppColor.lightBlue;
-      case "P":
-        return AppColor.orange.withOpacity(0.7);
-      case "J":
-        return AppColor.seaGreen;
-      case "R":
-        return AppColor.blue;
-      case "N":
-        return AppColor.lightBlue;
-      case "M":
-        return AppColor.orange.withOpacity(0.7);
-      case "K":
-        return AppColor.seaGreen;
-      case "O":
-        return AppColor.blue;
-      default:
-        return AppColor.indigo.withOpacity(0.9);
-    }
   }
 }
 

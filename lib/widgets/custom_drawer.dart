@@ -34,18 +34,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
         builder: (context, providerIndex, child) {
       return Container(
         height: height,
-        width: 250,
+        width: 240,
         decoration: BoxDecoration(
             color: AppColor.white,
             border: Border.all(color: AppColor.jetBlack)),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(5.0),
           child: SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(
                     height: height * 0.13,
-                    width: width * 0.13,
+                    width: width * 0.12,
                     child: Image.asset(AppImages.guitar)),
                 SizedBox(height: height * 0.04),
                 const Divider(
@@ -214,14 +214,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: const EdgeInsets.only(left: 3.0),
             child: SvgPicture.asset(
               iconPath,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: const EdgeInsets.only(left: 5.0),
             child: Text(
               text,
               style: TextStyle(

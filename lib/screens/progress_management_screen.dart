@@ -23,22 +23,13 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
       FirestoreServices.fetchCollectionData(
           'progressManagement', (data) => ProgressModel.fromMap(data));
   late ProgressCheckProvider progressCheckProvider;
-  late ValueNotifier<bool> isExpanded;
-  late TextEditingController feedbackController;
+  TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
     progressCheckProvider =
         Provider.of<ProgressCheckProvider>(context, listen: false);
-    feedbackController = TextEditingController();
-    isExpanded = ValueNotifier<bool>(false);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    feedbackController.dispose();
-    super.dispose();
   }
 
   @override
@@ -187,8 +178,7 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                                       BorderRadius.circular(5)),
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  feedbackDialog(context,
-                                                      feedbackController);
+                                                  customDialog(context);
                                                 },
                                                 child: Padding(
                                                   padding:
@@ -262,7 +252,8 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                                     const SizedBox(width: 10),
                                     Container(
                                       decoration: BoxDecoration(
-                                        color: getNameColor('${model.name}'),
+                                        color: AppColorUtlis.getNameColor(
+                                            '${model.name}'),
                                         borderRadius: BorderRadius.circular(36),
                                       ),
                                       height: 25,
@@ -283,126 +274,51 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
                               ),
                               DataCell(
                                 InkWell(
-                                    onTap: () {
-                                      // isExpanded.value = isExpanded.value;
-                                    },
-                                    child: isExpanded.value
-                                        ? SizedBox(
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                            child: Column(
-                                              children: [
-                                                CustomTextDataRow(
-                                                    text:
-                                                        '${model.leadGuitar}'),
-                                                CustomTextDataRow(
-                                                    text:
-                                                        '${model.leadGuitar}'),
-                                                CustomTextDataRow(
-                                                    text:
-                                                        '${model.leadGuitar}'),
-                                              ],
-                                            ),
-                                          )
-                                        : Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColor.skyBlue,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            height: 23,
-                                            width: 50,
-                                            child: Center(
-                                              child: CustomTextDataRow(
-                                                  text: '${model.leadGuitar}'),
-                                            ),
-                                          )),
-                              ),
-                              DataCell(
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColor.skyBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  height: 23,
-                                  width: 50,
-                                  child: Center(
-                                    child: CustomTextDataRow(
-                                        text: '${model.rhythmGuitar}'),
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColor.skyBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  height: 23,
-                                  width: 50,
-                                  child: Center(
-                                    child: CustomTextDataRow(
-                                        text: '${model.bassGuitar}'),
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColor.skyBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  height: 23,
-                                  width: 50,
-                                  child: Center(
-                                    child: CustomTextDataRow(
-                                        text: '${model.drums}'),
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColor.skyBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  height: 23,
-                                  width: 50,
-                                  child: Center(
+                                    onTap: () =>
+                                        questionDialog(context, controller),
                                     child:
-                                        CustomTextDataRow(text: '${model.mic}'),
-                                  ),
-                                ),
+                                        buildContainer('${model.leadGuitar}')),
                               ),
                               DataCell(
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColor.skyBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  height: 23,
-                                  width: 50,
-                                  child: Center(
-                                    child: CustomTextDataRow(
-                                        text: '${model.keyboard}'),
-                                  ),
-                                ),
+                                InkWell(
+                                    onTap: () =>
+                                        questionDialog(context, controller),
+                                    child: buildContainer(
+                                        '${model.rhythmGuitar}')),
+                              ),
+                              DataCell(
+                                InkWell(
+                                    onTap: () =>
+                                        questionDialog(context, controller),
+                                    child:
+                                        buildContainer('${model.bassGuitar}')),
+                              ),
+                              DataCell(
+                                InkWell(
+                                    onTap: () =>
+                                        questionDialog(context, controller),
+                                    child: buildContainer('${model.drums}')),
+                              ),
+                              DataCell(
+                                InkWell(
+                                    onTap: () =>
+                                        questionDialog(context, controller),
+                                    child: buildContainer('${model.mic}')),
+                              ),
+                              DataCell(
+                                InkWell(
+                                    onTap: () =>
+                                        questionDialog(context, controller),
+                                    child: buildContainer('${model.keyboard}')),
                               ),
                               DataCell(
                                 Row(
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: AppColor.skyBlue,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      height: 23,
-                                      width: 50,
-                                      child: Center(
-                                        child: CustomTextDataRow(
-                                            text: '${model.piano}'),
-                                      ),
-                                    ),
+                                    InkWell(
+                                        onTap: () =>
+                                            questionDialog(context, controller),
+                                        child:
+                                            buildContainer('${model.piano}')),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Consumer<ProgressCheckProvider>(
@@ -468,43 +384,17 @@ class _ProgressManagementScreenState extends State<ProgressManagementScreen> {
     );
   }
 
-  Color getNameColor(String name) {
-    String firstLetter = name.isNotEmpty ? name[0].trim() : "";
-    switch (firstLetter) {
-      case "A":
-        return AppColor.lightBlue;
-      case "B":
-        return AppColor.orange.withOpacity(0.7);
-      case "C":
-        return AppColor.seaGreen;
-      case "D":
-        return AppColor.blue;
-      case "E":
-        return AppColor.lightBlue;
-      case "F":
-        return AppColor.orange.withOpacity(0.7);
-      case "G":
-        return AppColor.seaGreen;
-      case "H":
-        return AppColor.blue;
-      case "I":
-        return AppColor.lightBlue;
-      case "P":
-        return AppColor.orange.withOpacity(0.7);
-      case "J":
-        return AppColor.seaGreen;
-      case "R":
-        return AppColor.blue;
-      case "N":
-        return AppColor.lightBlue;
-      case "M":
-        return AppColor.orange.withOpacity(0.7);
-      case "K":
-        return AppColor.seaGreen;
-      case "O":
-        return AppColor.blue;
-      default:
-        return AppColor.indigo.withOpacity(0.9);
-    }
+  Widget buildContainer(String text) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColor.skyBlue,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      height: 23,
+      width: 50,
+      child: Center(
+        child: CustomTextDataRow(text: text),
+      ),
+    );
   }
 }

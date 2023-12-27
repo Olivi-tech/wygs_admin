@@ -33,7 +33,7 @@ class AuthServices {
     try {
       DocumentReference users = FirebaseFirestore.instance
           .collection('adminDetails')
-          .doc(FirebaseAuth.instance.currentUser!.displayName);
+          .doc(adminModel.userName);
       await users.set(adminModel.toMap());
     } catch (e) {
       log('Error : ${e.toString()}');

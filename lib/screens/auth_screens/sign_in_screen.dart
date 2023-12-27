@@ -161,21 +161,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                     email: emailController.text,
                                     password: passWordController.text,
                                     context: context);
-
-                                bool? loginSuccess;
-
-                                // ignore: unnecessary_null_comparison
-                                if (loginSuccess != null) {
-                                  AuthServices.storeAdminData(
-                                    email: emailController.text,
-                                    controller: emailController.text,
-                                  );
-
-                                  emailController.clear();
-                                  passWordController.clear();
-
-                                  FocusScope.of(context).unfocus();
-                                } else {}
+                                AuthServices.storeAdminData(
+                                  email: emailController.text,
+                                  controller: emailController.text,
+                                );
+                               
                               }
                             },
                             textSize: AppSize.large,

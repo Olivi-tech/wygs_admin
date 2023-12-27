@@ -76,7 +76,8 @@ class BillingManagementScreen extends StatelessWidget {
                                   ? AppColor.paleBlue
                                   : AppColor.white),
                         ),
-                        columnSpacing: MediaQuery.of(context).size.width * .08,
+                        columnSpacing:
+                            MediaQuery.of(context).size.width * 0.09,
                         columns: [
                           DataColumn(
                               label: Row(
@@ -258,7 +259,7 @@ class BillingManagementScreen extends StatelessWidget {
                                     Container(
                                       decoration: BoxDecoration(
                                         color:
-                                            getStatusColor(model.status ?? ''),
+                                            AppColorUtlis.getStatusColor(model.status ?? ''),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       height: 23,
@@ -333,13 +334,3 @@ class BillingManagementScreen extends StatelessWidget {
   }
 }
 
-Color getStatusColor(String status) {
-  switch (status) {
-    case 'Pending':
-      return AppColor.purple;
-    case 'Paid':
-      return const Color(0xFF1CD3B2);
-    default:
-      return AppColor.indigo.withOpacity(0.9);
-  }
-}
