@@ -1,5 +1,3 @@
-import 'package:email_validator/email_validator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:guitar_songs/constants/constants.dart';
@@ -19,29 +17,45 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   late TextEditingController emailController;
-  late TextEditingController usernameController;
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
   late TextEditingController phoneController;
   late TextEditingController addressController;
-
-  Future<Map<String, dynamic>> adminData =
-      AuthServices.fetchAdminData().then((value) => value);
-
-  late Future<AdminModel?> adminDetails;
+  String imageUrl = '';
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late ImagePickerProvider imagePickerProvider;
-
+  Future<AdminModel?> adminDetails =
+      AuthServices.fetchAdminDetails().then((adminModel) {
+    return adminModel;
+  });
   @override
   void initState() {
     imagePickerProvider =
         Provider.of<ImagePickerProvider>(context, listen: false);
     Future.delayed(Duration.zero)
         .then((value) => imagePickerProvider.setPath = '');
-    adminDetails = AuthServices.fetchAdminDetails().then((adminModel) {
+    AuthServices.fetchAdminDetails().then((adminModel) {
+      if (adminModel != null) {
+        firstNameController.text = adminModel.firstName!;
+        lastNameController.text = adminModel.lastName!;
+        addressController.text = adminModel.address!;
+        phoneController.text = adminModel.phoneNumber!;
+        imageUrl = adminModel.imageUrl!;
+      } else {
+        firstNameController.text = '';
+        lastNameController.text = '';
+        addressController.text = '';
+        phoneController.text = '';
+        imageUrl = '';
+      }
       return adminModel;
     });
+    AuthServices.fetchAdminData().then((value) {
+      emailController.text = value['email'] ?? '';
+      return value;
+    });
+
     emailController = TextEditingController();
-    usernameController = TextEditingController();
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     phoneController = TextEditingController();
@@ -52,7 +66,6 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   void dispose() {
     emailController.dispose();
-    usernameController.dispose();
     firstNameController.dispose();
     lastNameController.dispose();
     phoneController.dispose();
@@ -67,645 +80,284 @@ class _SettingScreenState extends State<SettingScreen> {
     double width = size.width;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 40, right: 40),
-      child: FutureBuilder<AdminModel?>(
-          future: adminDetails,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                  child: CupertinoActivityIndicator(
-                color: AppColor.blue,
-              ));
-            } else if (snapshot.hasData) {
-              var data = snapshot.data;
-              return SingleChildScrollView(
-                child: Container(
-                  height: height,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: AppColor.white,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Stack(
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: SingleChildScrollView(
+        child: Container(
+          height: height,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: AppColor.white, borderRadius: BorderRadius.circular(20)),
+          child: Form(
+            key: formKey,
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 100,
+                    child: Image.asset(
+                      AppImages.rainbow,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 40,
+                  left: 70,
+                  child: SizedBox(
+                    height: 120,
+                    width: 120,
+                    child: Consumer<ImagePickerProvider>(
+                      builder: (context, value, child) {
+                        return SizedBox(
+                            child: value.path.isNotEmpty
+                                ? CircleAvatar(
+                                    backgroundImage: NetworkImage(value.path),
+                                  )
+                                : Image.asset(AppImages.person));
+                      },
+                    ),
+                  ),
+                ),
+                Positioned(
+                    top: 110,
+                    left: 270,
+                    child: FutureBuilder(
+                      future: adminDetails,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          AdminModel? data = snapshot.data!;
+                          return CustomText(
+                            text: '${data.firstName} ${data.lastName}',
+                            color: AppColor.black,
+                            size: 24,
+                            weight: FontWeight.w700,
+                          );
+                        } else {
+                          return const Text('');
+                        }
+                      },
+                    )),
+                Positioned(
+                  top: 155,
+                  left: 57,
+                  right: 57,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 100,
-                          child: Image.asset(
-                            AppImages.rainbow,
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 40,
-                        left: 70,
-                        child: SizedBox(
-                            height: 120,
-                            width: 120,
-                            child: Consumer<ImagePickerProvider>(
-                              builder: (context, value, child) {
-                                return SizedBox(
-                                  child: value.path.isNotEmpty
-                                      ? CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(value.path),
-                                        )
-                                      : Image.asset(AppImages.person),
-                                );
+                      Row(
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                AppUtlis.storeImageToFirebase(context);
                               },
-                            )),
+                              child: const CustomText(
+                                text: 'Change',
+                                color: AppColor.blue,
+                                size: AppSize.large,
+                                weight: FontWeight.w400,
+                              )),
+                          const Gap(40),
+                          InkWell(
+                            onTap: () {
+                              imagePickerProvider.deleteImage();
+                              AuthServices.deleteImageUrl();
+                            },
+                            child: const CustomText(
+                              text: 'Delete',
+                              color: AppColor.red,
+                              size: AppSize.large,
+                              weight: FontWeight.w400,
+                            ),
+                          )
+                        ],
                       ),
-                      Positioned(
-                        top: 110,
-                        left: 270,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: CustomText(
+                            text: 'Edit Profile',
+                            color: AppColor.black,
+                            size: AppSize.xlarge,
+                            weight: FontWeight.w700),
+                      ),
+                      const CustomText(
+                        text: 'Set up your personal information',
+                        color: AppColor.indigo,
+                        size: AppSize.large,
+                        weight: FontWeight.w400,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7),
+                        child: Row(
                           children: [
-                            nameText(),
-                            buildText('@Shakil Awan'),
+                            buildText('Email ID'),
+                            Gap(width * 0.3),
+                            buildText('First Name'),
                           ],
                         ),
                       ),
-                      Positioned(
-                        top: 155,
-                        left: 57,
-                        right: 57,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                InkWell(
-                                    onTap: () {
-                                      AppUtlis.storeImageToFirebase(context);
-                                    },
-                                    child: changeText('Change', true)),
-                                const Gap(40),
-                                InkWell(
-                                  onTap: () {
-                                    imagePickerProvider.deleteImage();
-                                  },
-                                  child: changeText('Delete', false),
-                                )
-                              ],
-                            ),
-                            Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: editText('Edit Profile', true)),
-                            editText('Set up your personal information', false),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                children: [
-                                  buildText('Email ID'),
-                                  Gap(width * 0.3),
-                                  buildText('Username'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        width: width * 0.23,
-                                        child: FutureBuilder(
-                                          future: adminData,
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData) {
-                                              Map<String, dynamic> data =
-                                                  snapshot.data
-                                                      as Map<String, dynamic>;
-                                              return CustomTextFormField(
-                                                controller: emailController,
-                                                readOnly: true,
-                                                hintText: data['email'] ?? '',
-                                                fillColor: AppColor.white,
-                                                validator: (email) {
-                                                  if (email != null &&
-                                                      !EmailValidator.validate(
-                                                          email)) {
-                                                    return 'Enter a valid email';
-                                                  }
-                                                  return null;
-                                                },
-                                              );
-                                            } else {
-                                              return const Text('');
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                  const Gap(30),
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: height * 0.1,
-                                      width: width * 0.23,
-                                      child: CustomTextFormField(
-                                        keyBoardType: TextInputType.name,
-                                        hintText: data!.userName ?? '',
-                                        controller: usernameController,
-                                        fillColor: AppColor.white,
-                                        validator: (value) {
-                                          if (value.length < 2) {
-                                            return 'Enter a username';
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                children: [
-                                  buildText('First Name'),
-                                  Gap(width * 0.285),
-                                  buildText('Last Name'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        width: width * 0.23,
-                                        child: CustomTextFormField(
-                                          keyBoardType: TextInputType.name,
-                                          hintText: data.firstName ?? '',
-                                          controller: firstNameController,
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            if (value.length < 2) {
-                                              return 'Enter correct name';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                  const Gap(30),
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        width: width * 0.23,
-                                        child: CustomTextFormField(
-                                          keyBoardType: TextInputType.name,
-                                          hintText: data.lastName ?? '',
-                                          controller: lastNameController,
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            if (value.length < 2) {
-                                              return 'Enter correct name';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                children: [
-                                  buildText('Phone No'),
-                                  Gap(width * 0.285),
-                                  buildText('Address'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        child: CustomTextFormField(
-                                          keyBoardType: TextInputType.phone,
-                                          controller: phoneController,
-                                          hintText: data.phoneNumber ?? '',
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            bool phoneValid = RegExp(
-                                                    r'(^(?:[+0]9)?[0-9]{10,12}$)')
-                                                .hasMatch(value!);
-                                            if (!phoneValid &&
-                                                phoneController.text.length !=
-                                                    11) {
-                                              return 'Enter valid phone number';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                  const Gap(30),
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        child: CustomTextFormField(
-                                          hintText: data.address ?? '',
-                                          controller: addressController,
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Enter correct address';
-                                            } else if (value.length < 2) {
-                                              return 'Enter correct address';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
+                            Expanded(
                               child: SizedBox(
-                                height: height * 0.07,
-                                width: 100,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      fixedSize:
-                                          Size(width * 0.9, height * 0.07),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      backgroundColor: AppColor.blue),
-                                  onPressed: () async {
-                                    toastMessage('Saved Successfully');
-
-                                    AdminModel adminModel = AdminModel(
-                                        userName:
-                                            usernameController.text.isEmpty
-                                                ? data.userName
-                                                : usernameController.text,
-                                        address: addressController.text.isEmpty
-                                            ? data.address
-                                            : addressController.text,
-                                        firstName:
-                                            firstNameController.text.isEmpty
-                                                ? data.firstName
-                                                : firstNameController.text,
-                                        lastName:
-                                            lastNameController.text.isEmpty
-                                                ? data.lastName
-                                                : lastNameController.text,
-                                        phoneNumber:
-                                            phoneController.text.isEmpty
-                                                ? data.phoneNumber
-                                                : phoneController.text);
-                                    AuthServices.updateAdminDetails(
-                                        adminModel: adminModel);
-                                    AuthServices.storeAdminDetails(
-                                        adminModel: adminModel);
+                                height: height * 0.1,
+                                width: width * 0.23,
+                                child: CustomTextField(
+                                  borderColor: const Color(0xE5D1D9E6),
+                                  controller: emailController,
+                                  readOnly: true,
+                                  fillColor: AppColor.white,
+                                ),
+                              ),
+                            ),
+                            const Gap(30),
+                            Expanded(
+                              child: SizedBox(
+                                height: height * 0.1,
+                                width: width * 0.23,
+                                child: CustomTextField(
+                                  borderColor: const Color(0xE5D1D9E6),
+                                  keyBoardType: TextInputType.name,
+                                  controller: firstNameController,
+                                  fillColor: AppColor.white,
+                                  validator: (value) {
+                                    if (value.length < 2) {
+                                      return 'Enter correct name';
+                                    } else {
+                                      return null;
+                                    }
                                   },
-                                  child: const Center(
-                                    child: Text(
-                                      'SAVE',
-                                      style: TextStyle(
-                                          fontSize: AppSize.large,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColor.white),
-                                    ),
-                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              return SingleChildScrollView(
-                child: Container(
-                  height: height,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: AppColor.white,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7),
+                        child: Row(
+                          children: [
+                            buildText('Last Name'),
+                            Gap(width * 0.285),
+                            buildText('Phone No'),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                  height: height * 0.1,
+                                  width: width * 0.23,
+                                  child: CustomTextField(
+                                    borderColor: const Color(0xE5D1D9E6),
+                                    keyBoardType: TextInputType.name,
+                                    controller: lastNameController,
+                                    fillColor: AppColor.white,
+                                    validator: (value) {
+                                      if (value.length < 2) {
+                                        return 'Enter correct name';
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                  )),
+                            ),
+                            const Gap(30),
+                            Expanded(
+                              child: SizedBox(
+                                  height: height * 0.1,
+                                  width: width * 0.23,
+                                  child: CustomTextField(
+                                    borderColor: const Color(0xE5D1D9E6),
+                                    keyBoardType: TextInputType.phone,
+                                    controller: phoneController,
+                                    fillColor: AppColor.white,
+                                    validator: (value) {
+                                      bool phoneValid =
+                                          RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                                              .hasMatch(value!);
+                                      if (!phoneValid) {
+                                        return 'Enter valid phone number';
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7),
+                        child: buildText('Address'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7),
                         child: SizedBox(
-                          width: double.infinity,
-                          height: 100,
-                          child: Image.asset(
-                            AppImages.rainbow,
-                            fit: BoxFit.fitWidth,
+                          height: height * 0.1,
+                          width: width * 0.32,
+                          child: CustomTextField(
+                            controller: addressController,
+                            borderColor: const Color(0xE5D1D9E6),
+                            fillColor: AppColor.white,
+                            validator: (value) {
+                              if (value.length < 2) {
+                                return 'Enter correct address';
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
                         ),
                       ),
-                      Positioned(
-                        top: 40,
-                        left: 70,
+                      Align(
+                        alignment: Alignment.bottomRight,
                         child: SizedBox(
-                            height: 120,
-                            width: 120,
-                            child: GestureDetector(
-                              child: Consumer<ImagePickerProvider>(
-                                builder: (context, value, child) {
-                                  return SizedBox(
-                                    child: value.path.isNotEmpty
-                                        ? CircleAvatar(
-                                            backgroundImage:
-                                                NetworkImage(value.path),
-                                          )
-                                        : Image.asset(AppImages.person),
+                            height: height * 0.07,
+                            width: 100,
+                            child: CustomButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  String profileImageUrl =
+                                      context.read<ImagePickerProvider>().path;
+                                  toastMessage('Saved Successfully');
+                                  AdminModel adminModel = AdminModel(
+                                      firstName: firstNameController.text,
+                                      lastName: lastNameController.text,
+                                      phoneNumber: phoneController.text,
+                                      address: addressController.text,
+                                      imageUrl: profileImageUrl);
+
+                                  AuthServices.storeAdminDetails(
+                                    adminModel: adminModel,
                                   );
-                                },
-                              ),
+                                }
+                              },
+                              text: 'SAVE',
+                              fixedHeight: height * 0.07,
+                              fixedWidth: width * 0.8,
+                              backgroundColor: AppColor.blue,
+                              textColor: AppColor.white,
                             )),
                       ),
-                      Positioned(
-                        top: 110,
-                        left: 270,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            nameText(),
-                            buildText('@Shakil Awan'),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 155,
-                        left: 57,
-                        right: 57,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    AppUtlis.storeImageToFirebase(context);
-                                  },
-                                  child: changeText('Change', true),
-                                ),
-                                const Gap(40),
-                                InkWell(
-                                    onTap: () {
-                                      imagePickerProvider.deleteImage();
-                                    },
-                                    child: changeText('Delete', false))
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: editText('Edit Profile', true),
-                            ),
-                            editText('Set up your personal information', false),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                children: [
-                                  buildText('Email ID'),
-                                  Gap(width * 0.3),
-                                  buildText('Username'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: height * 0.1,
-                                      width: width * 0.23,
-                                      child: CustomTextFormField(
-                                        controller: emailController,
-                                        readOnly: true,
-                                        hintText: '',
-                                        fillColor: AppColor.white,
-                                        validator: (email) {
-                                          if (email != null &&
-                                              !EmailValidator.validate(email)) {
-                                            return 'Enter a valid email';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  const Gap(30),
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: height * 0.1,
-                                      width: width * 0.23,
-                                      child: CustomTextFormField(
-                                        keyBoardType: TextInputType.name,
-                                        hintText: '',
-                                        controller: usernameController,
-                                        fillColor: AppColor.white,
-                                        validator: (value) {
-                                          if (value.length < 3) {
-                                            return 'Enter a username';
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                children: [
-                                  buildText('First Name'),
-                                  Gap(width * 0.285),
-                                  buildText('Last Name'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        width: width * 0.23,
-                                        child: CustomTextFormField(
-                                          keyBoardType: TextInputType.name,
-                                          hintText: '',
-                                          controller: firstNameController,
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Enter correct name';
-                                            } else if (value.length < 2) {
-                                              return 'Enter correct name';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                  const Gap(30),
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        width: width * 0.23,
-                                        child: CustomTextFormField(
-                                          keyBoardType: TextInputType.name,
-                                          hintText: '',
-                                          controller: lastNameController,
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Enter correct name';
-                                            } else if (value.length < 3) {
-                                              return 'Enter correct name';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                children: [
-                                  buildText('Phone No'),
-                                  Gap(width * 0.295),
-                                  buildText('Address'),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 7),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        child: CustomTextFormField(
-                                          keyBoardType: TextInputType.phone,
-                                          controller: phoneController,
-                                          hintText: '',
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            bool phoneValid = RegExp(
-                                                    r'(^(?:[+0]9)?[0-9]{10,12}$)')
-                                                .hasMatch(value!);
-                                            if (value.isEmpty) {
-                                              return 'Enter phone number';
-                                            } else if (!phoneValid &&
-                                                phoneController.text.length !=
-                                                    11) {
-                                              return 'Enter valid phone number';
-                                            }
-                                            return null;
-                                          },
-                                        )),
-                                  ),
-                                  const Gap(30),
-                                  Expanded(
-                                    child: SizedBox(
-                                        height: height * 0.1,
-                                        child: CustomTextFormField(
-                                          hintText: '',
-                                          controller: addressController,
-                                          fillColor: AppColor.white,
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Enter correct address';
-                                            } else if (value.length < 2) {
-                                              return 'Enter correct address';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: SizedBox(
-                                height: height * 0.07,
-                                width: 100,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      fixedSize:
-                                          Size(width * 0.9, height * 0.07),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      backgroundColor: AppColor.blue),
-                                  onPressed: () async {
-                                    toastMessage('Saved Successfully');
-
-                                    AdminModel adminModel = AdminModel(
-                                        userName: usernameController.text,
-                                        address: addressController.text,
-                                        firstName: firstNameController.text,
-                                        lastName: lastNameController.text,
-                                        phoneNumber: phoneController.text);
-
-                                    AuthServices.storeAdminDetails(
-                                        adminModel: adminModel);
-                                  },
-                                  child: Center(
-                                    child: saveText('Save'),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   ),
-                ),
-              );
-            }
-          }),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -717,49 +369,6 @@ class _SettingScreenState extends State<SettingScreen> {
         fontSize: AppSize.large,
         fontWeight: FontWeight.w500,
       ),
-    );
-  }
-
-  Widget nameText() {
-    return const Text(
-      'Shakil Awan',
-      style: TextStyle(
-        color: AppColor.black,
-        fontSize: 24,
-        fontWeight: FontWeight.w700,
-      ),
-    );
-  }
-
-  Widget changeText(String text, bool isChange) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: isChange ? AppColor.blue : AppColor.red,
-        fontSize: AppSize.large,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-  }
-
-  Widget editText(String text, bool isChange) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: isChange ? AppColor.black : AppColor.indigo,
-        fontSize: isChange ? AppSize.xlarge : AppSize.large,
-        fontWeight: isChange ? FontWeight.w700 : FontWeight.w400,
-      ),
-    );
-  }
-
-  Widget saveText(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-          fontSize: AppSize.large,
-          fontWeight: FontWeight.w600,
-          color: AppColor.white),
     );
   }
 }

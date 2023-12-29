@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guitar_songs/constants/constants.dart';
 import 'package:guitar_songs/providers/providers.dart';
 import 'package:guitar_songs/utlis/app_routes.dart';
-import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -29,7 +28,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final double height = size.height;
-    final double width = size.width;
     return Consumer<ScreenTransitionProvider>(
         builder: (context, providerIndex, child) {
       return Container(
@@ -39,13 +37,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
             color: AppColor.white,
             border: Border.all(color: AppColor.jetBlack)),
         child: Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.fromLTRB(5, 20, 5, 2),
           child: SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(
-                    height: height * 0.13,
-                    width: width * 0.12,
+                    height: 80,
+                    width: 200,
                     child: Image.asset(AppImages.guitar)),
                 SizedBox(height: height * 0.04),
                 const Divider(

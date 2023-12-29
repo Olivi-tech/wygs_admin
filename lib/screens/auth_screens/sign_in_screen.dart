@@ -15,13 +15,19 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   late TextEditingController emailController;
-  TextEditingController passWordController = TextEditingController();
+  late TextEditingController passWordController;
   GlobalKey<FormState> formField = GlobalKey<FormState>();
   late ValueNotifier<bool> passwordVisibility;
+  late ValueNotifier<bool> loading;
   @override
   void initState() {
     emailController = TextEditingController();
+    passWordController = TextEditingController();
+    emailController.text = "test@gmail.com";
+    passWordController.text = "123456";
     passwordVisibility = ValueNotifier<bool>(true);
+    loading = ValueNotifier<bool>(false);
+
     super.initState();
   }
 
@@ -30,6 +36,7 @@ class _SignInScreenState extends State<SignInScreen> {
     emailController.dispose();
     passWordController.dispose();
     passwordVisibility.dispose();
+    loading.dispose();
     super.dispose();
   }
 
@@ -106,10 +113,11 @@ class _SignInScreenState extends State<SignInScreen> {
                             hintText: 'Enter Email ID',
                             hintStyle: const TextStyle(fontSize: AppSize.large),
                             fillColor: AppColor.white,
+                            borderColor: AppColor.white,
                             validator: (email) {
                               if (email != null &&
                                   !EmailValidator.validate(email)) {
-                                return 'Enter a valid email';
+                                return 'Please enter a valid email';
                               }
                               return null;
                             },
@@ -122,8 +130,10 @@ class _SignInScreenState extends State<SignInScreen> {
                           builder: (context, isVisible, child) =>
                               CustomTextField(
                             fillColor: AppColor.white,
+                            borderColor: AppColor.white,
                             isVisibleText: isVisible,
                             hintText: 'Password',
+                            obscuringCharacter: '●',
                             hintStyle: const TextStyle(fontSize: AppSize.large),
                             suffixIcon: GestureDetector(
                               onTap: () {
@@ -138,10 +148,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             controller: passWordController,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Enter Password';
-                              } else if (passWordController.text.length <= 4) {
-                                return 'Password is too short';
+                              if (value.isEmpty) {
+                                return 'Please enter a password';
                               } else {
                                 return null;
                               }
@@ -152,25 +160,38 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       SizedBox(height: height * 0.03),
                       SizedBox(
-                          height: height * 0.1,
-                          width: width * 0.28,
-                          child: CustomButton(
-                            onPressed: () {
-                              if (formField.currentState!.validate()) {
-                                AuthServices.login(
-                                    email: emailController.text,
-                                    password: passWordController.text,
-                                    context: context);
-                                AuthServices.storeAdminData(
-                                  email: emailController.text,
-                                  controller: emailController.text,
-                                );
-                               
-                              }
-                            },
-                            textSize: AppSize.large,
-                            text: 'Sign In',
-                          )),
+                        height: height * 0.08,
+                        width: width * 0.28,
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: loading,
+                          builder: (context, value, child) {
+                            return CustomButton(
+                              isLoading: value,
+                              onPressed: () async {
+                                if (formField.currentState!.validate()) {
+                                  loading.value = true;
+                                  bool loginSuccessful =
+                                      await AuthServices.login(
+                                          email: emailController.text,
+                                          password: passWordController.text,
+                                          context: context);
+                                  loading.value = false;
+                                  if (loginSuccessful) {
+                                    AuthServices.storeAdminData(
+                                      email: emailController.text,
+                                      controller: emailController.text,
+                                    );
+                                  }
+                                }
+                              },
+                              backgroundColor: AppColor.blue,
+                              textColor: AppColor.white,
+                              textSize: AppSize.large,
+                              text: 'Sign In',
+                            );
+                          },
+                        ),
+                      ),
                       SizedBox(height: height * 0.1),
                     ],
                   ),

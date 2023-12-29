@@ -1,66 +1,85 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:guitar_songs/model/model.dart';
 import 'package:guitar_songs/utlis/utlis.dart';
 import 'dart:developer';
 
 class AuthServices {
-  static Future<void> login(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((value) {
-      if (FirebaseAuth.instance.currentUser != null) {
-        toastMessage('Successfully SignIn');
-        Future.delayed(const Duration(milliseconds: 500))
-            .then((value) => Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.progressManagement,
-                  (route) => false,
-                ));
+  static Future<bool> login({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      if (userCredential.user != null) {
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRoutes.homeScreen,
+            (route) => false,
+          );
+        });
+        return true;
       } else {
         log('Not Login');
+        return false;
       }
-    }).onError((error, stackTrace) {
-      toastMessage('Error');
-    });
-  }
-
-  static Future<void> storeAdminDetails(
-      {required AdminModel adminModel}) async {
-    try {
-      DocumentReference users = FirebaseFirestore.instance
-          .collection('adminDetails')
-          .doc(adminModel.userName);
-      await users.set(adminModel.toMap());
     } catch (e) {
-      log('Error : ${e.toString()}');
+      toastMessage('Error');
+      return false;
     }
   }
 
-  static Future<void> updateAdminDetails(
-      {required AdminModel adminModel}) async {
+  static Future<void> storeAdminDetails({
+    required AdminModel adminModel,
+  }) async {
     try {
-      DocumentReference users = FirebaseFirestore.instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference user = firestore
           .collection('adminDetails')
-          .doc(adminModel.userName);
-      await users.update(adminModel.toMap());
+          .doc(FirebaseAuth.instance.currentUser!.uid);
+      Map<String, dynamic> adminData = adminModel.toMap();
+      await user.set(adminData);
     } catch (e) {
-      log('Error : ${e.toString()}');
+      log('Error storing admin details: ${e.toString()}');
     }
   }
 
   static Future<AdminModel?> fetchAdminDetails() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
-        .instance
-        .collection('adminDetails')
-        .orderBy('user_name', descending: false)
-        .limit(1)
-        .get();
-    Map<String, dynamic> mapData = querySnapshot.docs.first.data();
-    return AdminModel.fromMap(mapData);
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await FirebaseFirestore.instance
+              .collection('adminDetails')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .get();
+
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> mapData = documentSnapshot.data()!;
+        return AdminModel.fromMap(mapData);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      log('Error fetching admin details: ${e.toString()}');
+      return null;
+    }
+  }
+
+  static Future<void> deleteImageUrl() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('adminDetails')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({
+        'image_url': FieldValue.delete(),
+      });
+      toastMessage('Deleted Successfully');
+    } catch (e) {
+      log('Error deleting imageUrl: ${e.toString()}');
+    }
   }
 
   static Future<void> storeAdminData(
@@ -75,9 +94,20 @@ class AuthServices {
   }
 
   static Future<Map<String, dynamic>> fetchAdminData() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance.collection('adminData').get();
-    Map<String, dynamic> mapData = querySnapshot.docs.first.data();
-    return mapData;
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance.collection('adminData').get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        Map<String, dynamic> mapData = querySnapshot.docs.first.data();
+        return mapData;
+      } else {
+        return {};
+      }
+    } catch (e) {
+      log('Error fetching admin data: $e');
+
+      return {};
+    }
   }
 }

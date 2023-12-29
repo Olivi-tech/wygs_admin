@@ -19,4 +19,5 @@ class AppColor {
   static const lightWhite = Color(0xFFF3F7F9);
   static const purple = Color(0xFF7B43F5);
   static const paleBlue = Color(0xFFE5EFF6);
+  static const deepAmber = Color.fromARGB(255, 235, 143, 0);
 }

@@ -17,6 +17,7 @@ void main() async {
       appId: "1:166719206090:web:8e843e866afbd13cd17a33",
     ),
   );
+
   runApp(const GuitarApp());
 }
 
@@ -53,6 +54,6 @@ class GuitarApp extends StatelessWidget {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             onGenerateRoute: onGenerateRoute,
-            home: HomeScreen()));
+            home: SignInScreen()));
   }
 }

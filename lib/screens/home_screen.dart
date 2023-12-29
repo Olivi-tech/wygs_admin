@@ -82,11 +82,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: SizedBox(
                                 width: width * 0.17,
                                 height: height * 0.07,
-                                child: CustomTextFormField(
+                                child: CustomTextField(
                                   hintText: 'Search here',
                                   controller: searchController,
                                   onChanged: (value) {},
                                   fillColor: AppColor.white,
+                                  borderColor:const Color(0xE5D1D9E6),
                                   suffixIcon: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: SvgPicture.asset(AppSvgs.search),

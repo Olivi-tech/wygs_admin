@@ -1,38 +1,55 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:guitar_songs/constants/constants.dart';
-import 'package:guitar_songs/widgets/widgets.dart';
+import 'package:guitar_songs/constants/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
   final double? textSize;
+  final Color? backgroundColor;
+  final Color borderColor;
+  final Color? textColor;
+  final double fixedHeight;
+  final double fixedWidth;
+  final FontWeight? weight;
+  final bool isLoading;
   const CustomButton({
-    super.key,
+    Key? key,
     required this.onPressed,
     required this.text,
     this.textSize,
-  });
+    this.backgroundColor,
+    this.textColor,
+    this.borderColor = Colors.transparent,
+    this.fixedHeight = 0,
+    this.fixedWidth = 0,
+    this.isLoading = false,
+    this.weight,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final height = size.height;
-    final width = size.width;
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            fixedSize: Size(width * 0.9, height * 0.07),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            backgroundColor: AppColor.blue),
-        onPressed: onPressed,
-        child: FittedBox(
-          child: Text(
-           text,
-           style: TextStyle(
-            fontSize: textSize,
-            color: AppColor.white,
-           ),
-          ),
-        ));
+      style: ElevatedButton.styleFrom(
+        fixedSize: Size(fixedWidth, fixedHeight),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(color: borderColor)),
+        backgroundColor: backgroundColor,
+      ),
+      onPressed: onPressed,
+      child: isLoading
+          ? const CupertinoActivityIndicator(
+              color: Colors.yellow,
+            )
+          : Text(
+              text,
+              style: TextStyle(
+                fontSize: textSize,
+                color: textColor,
+                fontWeight: weight,
+              ),
+            ),
+    );
   }
 }

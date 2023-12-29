@@ -21,7 +21,6 @@ class UserManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final double height = size.height;
     final double width = size.width;
     userCheckProvider = Provider.of<UserCheckProvider>(context, listen: false);
     return StreamBuilder(
