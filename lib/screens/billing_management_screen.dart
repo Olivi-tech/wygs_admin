@@ -37,293 +37,304 @@ class BillingManagementScreen extends StatelessWidget {
         if (snapshot.hasData) {
           List<BillingModel> billingData = snapshot.data!;
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 15, left: 25),
-                  child: Text(
-                    'User’s Subscription Management',
-                    style: TextStyle(
-                      color: AppColor.indigo,
-                      fontSize: AppSize.small,
-                      fontWeight: FontWeight.w500,
+          return ScrollConfiguration(
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 15, left: 25),
+                    child: Text(
+                      'User’s Subscription Management',
+                      style: TextStyle(
+                        color: AppColor.indigo,
+                        fontSize: AppSize.small,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 20, bottom: 30),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColor.white,
-                      border: Border.all(color: AppColor.jetBlack),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(15)),
-                          color: MaterialStateColor.resolveWith((states) =>
-                              Provider.of<BillingCheckProvider>(context)
-                                          .selectedIndices
-                                          .length ==
-                                      billingData.length
-                                  ? AppColor.paleBlue
-                                  : AppColor.white),
-                        ),
-                        columnSpacing:
-                            MediaQuery.of(context).size.width * 0.09,
-                        columns: [
-                          DataColumn(
-                              label: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  billingCheckProvider.selectAll(billingData);
-                                },
-                                child: Consumer<BillingCheckProvider>(
-                                  builder: (context, value, child) {
-                                    return Container(
-                                        height: 18,
-                                        width: 18,
-                                        decoration: BoxDecoration(
-                                          color: value.selectedIndices.length ==
-                                                  billingData.length
-                                              ? AppColor.green
-                                              : AppColor.white,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          border:
-                                              value.selectedIndices.length ==
-                                                      billingData.length
-                                                  ? Border.all(
-                                                      color: AppColor.green)
-                                                  : Border.all(
-                                                      color: AppColor.black
-                                                          .withOpacity(0.7)),
-                                        ),
-                                        child: value.selectedIndices.length ==
-                                                billingData.length
-                                            ? const Icon(
-                                                Icons.check,
-                                                size: 14,
-                                                color: AppColor.white,
-                                              )
-                                            : const SizedBox());
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              const CustomTextDataColumn(text: 'Invoice ID'),
-                            ],
-                          )),
-                          const DataColumn(
-                            label: Expanded(
-                                child: CustomTextDataColumn(text: 'Name')),
-                          ),
-                          const DataColumn(
-                            label: Expanded(
-                                child: CustomTextDataColumn(
-                                    text: 'Subcription Plan')),
-                          ),
-                          const DataColumn(
-                            label: Expanded(
-                                child: CustomTextDataColumn(text: 'Type')),
-                          ),
-                          const DataColumn(
-                            label: Expanded(
-                                child: CustomTextDataColumn(text: 'Price')),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Row(
-                                children: [
-                                  const CustomTextDataColumn(text: 'Status'),
-                                  SizedBox(
-                                    width: width * 0.02,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: Consumer<BillingCheckProvider>(
-                                      builder: (context, value, child) {
-                                        return value.selectedIndices.length ==
-                                                billingData.length
-                                            ? Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: BoxDecoration(
-                                                    color: AppColor.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    customDialog(context);
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            3.0),
-                                                    child: SvgPicture.asset(
-                                                        AppSvgs.delete),
-                                                  ),
-                                                ))
-                                            : const SizedBox();
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                        rows: billingData
-                            .asMap()
-                            .entries
-                            .map((MapEntry<int, BillingModel> entry) {
-                          final int index = entry.key;
-                          final BillingModel model = entry.value;
-                          return DataRow(
-                            color: MaterialStateColor.resolveWith(
-                              (states) {
-                                return Provider.of<BillingCheckProvider>(
-                                            context)
-                                        .isSelected(index)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 20, top: 20, bottom: 30),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColor.white,
+                        border: Border.all(color: AppColor.jetBlack),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                            color: MaterialStateColor.resolveWith((states) =>
+                                Provider.of<BillingCheckProvider>(context)
+                                            .selectedIndices
+                                            .length ==
+                                        billingData.length
                                     ? AppColor.paleBlue
-                                    : AppColor.white;
-                              },
-                            ),
-                            cells: [
-                              DataCell(
-                                Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        billingCheckProvider
-                                            .toggleChecked(index);
-                                      },
-                                      child: Consumer<BillingCheckProvider>(
-                                        builder: (context, provider, child) =>
-                                            Container(
+                                    : AppColor.white),
+                          ),
+                          columnSpacing:
+                              MediaQuery.of(context).size.width * 0.09,
+                          columns: [
+                            DataColumn(
+                                label: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    billingCheckProvider.selectAll(billingData);
+                                  },
+                                  child: Consumer<BillingCheckProvider>(
+                                    builder: (context, value, child) {
+                                      return Container(
                                           height: 18,
                                           width: 18,
                                           decoration: BoxDecoration(
-                                            color: provider.isSelected(index)
-                                                ? AppColor.green
-                                                : AppColor.white,
+                                            color:
+                                                value.selectedIndices.length ==
+                                                        billingData.length
+                                                    ? AppColor.green
+                                                    : AppColor.white,
                                             borderRadius:
                                                 BorderRadius.circular(5),
-                                            border: provider.isSelected(index)
-                                                ? Border.all(
-                                                    color: AppColor.green)
-                                                : Border.all(
-                                                    color: Colors.black
-                                                        .withOpacity(0.7)),
+                                            border:
+                                                value.selectedIndices.length ==
+                                                        billingData.length
+                                                    ? Border.all(
+                                                        color: AppColor.green)
+                                                    : Border.all(
+                                                        color: AppColor.black
+                                                            .withOpacity(0.7)),
                                           ),
-                                          child: provider.isSelected(index)
+                                          child: value.selectedIndices.length ==
+                                                  billingData.length
                                               ? const Icon(
                                                   Icons.check,
                                                   size: 14,
                                                   color: AppColor.white,
                                                 )
-                                              : null,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    CustomTextDataRow(text: '${model.id}'),
-                                  ],
+                                              : const SizedBox());
+                                    },
+                                  ),
                                 ),
-                              ),
-                              DataCell(
-                                CustomTextDataRow(text: '${model.name}'),
-                              ),
-                              DataCell(
-                                CustomTextDataRow(
-                                    text: '${model.subscription}'),
-                              ),
-                              DataCell(
-                                CustomTextDataRow(text: '${model.type}'),
-                              ),
-                              DataCell(
-                                CustomTextDataRow(text: '${model.price}'),
-                              ),
-                              DataCell(
-                                Row(
+                                const SizedBox(width: 10),
+                                const CustomTextDataColumn(text: 'Invoice ID'),
+                              ],
+                            )),
+                            const DataColumn(
+                              label: Expanded(
+                                  child: CustomTextDataColumn(text: 'Name')),
+                            ),
+                            const DataColumn(
+                              label: Expanded(
+                                  child: CustomTextDataColumn(
+                                      text: 'Subcription Plan')),
+                            ),
+                            const DataColumn(
+                              label: Expanded(
+                                  child: CustomTextDataColumn(text: 'Type')),
+                            ),
+                            const DataColumn(
+                              label: Expanded(
+                                  child: CustomTextDataColumn(text: 'Price')),
+                            ),
+                            DataColumn(
+                              label: Expanded(
+                                child: Row(
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            AppColorUtlis.getStatusColor(model.status ?? ''),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      height: 23,
-                                      width: 77,
-                                      child: Center(
-                                        child: CustomTextDataRow(
-                                            text: '${model.status}'),
-                                      ),
+                                    const CustomTextDataColumn(text: 'Status'),
+                                    SizedBox(
+                                      width: width * 0.02,
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
                                       child: Consumer<BillingCheckProvider>(
                                         builder: (context, value, child) {
                                           return value.selectedIndices.length ==
                                                   billingData.length
-                                              ? const SizedBox()
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    billingCheckProvider
-                                                        .toggleChecked(index);
-                                                  },
-                                                  child: value.isSelected(index)
-                                                      ? Container(
-                                                          height: 25,
-                                                          width: 25,
-                                                          decoration: BoxDecoration(
-                                                              color: AppColor
-                                                                  .white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () {
-                                                              customDialog(
-                                                                  context);
-                                                            },
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(3.0),
-                                                              child: SvgPicture
-                                                                  .asset(AppSvgs
-                                                                      .delete),
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : const SizedBox(),
-                                                );
+                                              ? Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: BoxDecoration(
+                                                      color: AppColor.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5)),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      //    customDialog(context);
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              3.0),
+                                                      child: SvgPicture.asset(
+                                                          AppSvgs.delete),
+                                                    ),
+                                                  ))
+                                              : const SizedBox();
                                         },
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
-                          );
-                        }).toList(),
+                            ),
+                          ],
+                          rows: billingData
+                              .asMap()
+                              .entries
+                              .map((MapEntry<int, BillingModel> entry) {
+                            final int index = entry.key;
+                            final BillingModel model = entry.value;
+                            return DataRow(
+                              color: MaterialStateColor.resolveWith(
+                                (states) {
+                                  return Provider.of<BillingCheckProvider>(
+                                              context)
+                                          .isSelected(index)
+                                      ? AppColor.paleBlue
+                                      : AppColor.white;
+                                },
+                              ),
+                              cells: [
+                                DataCell(
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          billingCheckProvider
+                                              .toggleChecked(index);
+                                        },
+                                        child: Consumer<BillingCheckProvider>(
+                                          builder: (context, provider, child) =>
+                                              Container(
+                                            height: 18,
+                                            width: 18,
+                                            decoration: BoxDecoration(
+                                              color: provider.isSelected(index)
+                                                  ? AppColor.green
+                                                  : AppColor.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              border: provider.isSelected(index)
+                                                  ? Border.all(
+                                                      color: AppColor.green)
+                                                  : Border.all(
+                                                      color: Colors.black
+                                                          .withOpacity(0.7)),
+                                            ),
+                                            child: provider.isSelected(index)
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    size: 14,
+                                                    color: AppColor.white,
+                                                  )
+                                                : null,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      CustomTextDataRow(text: '${model.id}'),
+                                    ],
+                                  ),
+                                ),
+                                DataCell(
+                                  CustomTextDataRow(text: '${model.name}'),
+                                ),
+                                DataCell(
+                                  CustomTextDataRow(
+                                      text: '${model.subscription}'),
+                                ),
+                                DataCell(
+                                  CustomTextDataRow(text: '${model.type}'),
+                                ),
+                                DataCell(
+                                  CustomTextDataRow(text: '${model.price}'),
+                                ),
+                                DataCell(
+                                  Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColorUtlis.getStatusColor(
+                                              model.status ?? ''),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        height: 23,
+                                        width: 77,
+                                        child: Center(
+                                          child: CustomTextDataRow(
+                                              text: '${model.status}'),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Consumer<BillingCheckProvider>(
+                                          builder: (context, value, child) {
+                                            return value.selectedIndices
+                                                        .length ==
+                                                    billingData.length
+                                                ? const SizedBox()
+                                                : GestureDetector(
+                                                    onTap: () {
+                                                      billingCheckProvider
+                                                          .toggleChecked(index);
+                                                    },
+                                                    child:
+                                                        value.isSelected(index)
+                                                            ? Container(
+                                                                height: 25,
+                                                                width: 25,
+                                                                decoration: BoxDecoration(
+                                                                    color: AppColor
+                                                                        .white,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            5)),
+                                                                child:
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    // customDialog(
+                                                                    //     context);
+                                                                  },
+                                                                  child:
+                                                                      Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            3.0),
+                                                                    child: SvgPicture
+                                                                        .asset(AppSvgs
+                                                                            .delete),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : const SizedBox(),
+                                                  );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         } else {
@@ -333,4 +344,3 @@ class BillingManagementScreen extends StatelessWidget {
     );
   }
 }
-

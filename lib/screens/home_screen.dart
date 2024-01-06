@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guitar_songs/constants/constants.dart';
+import 'package:guitar_songs/model/model.dart';
 import 'package:guitar_songs/providers/providers.dart';
 import 'package:guitar_songs/screens/screens.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
@@ -17,9 +19,21 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool isDrawerVisible = true;
   late TextEditingController searchController;
+  List<UserModel> userList = <UserModel>[];
+  List<UserModel> filterList = <UserModel>[];
+
+  void getUserData() async {
+    final fireStore =
+        await FirebaseFirestore.instance.collection('user_data').get();
+    userList.addAll(
+        fireStore.docs.map((doc) => UserModel.fromMap(doc.data(), doc.id)));
+    setState(() {});
+  }
+
   @override
   void initState() {
     searchController = TextEditingController();
+    getUserData();
     super.initState();
   }
 
@@ -85,9 +99,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: CustomTextField(
                                   hintText: 'Search here',
                                   controller: searchController,
-                                  onChanged: (value) {},
+                                  onChanged: (query) {
+                                    if (query.isNotEmpty) {
+                                      filterList = userList.where((user) {
+                                        return user.name!
+                                            .toLowerCase()
+                                            .contains(query.toLowerCase());
+                                      }).toList();
+                                    } else {
+                                      filterList.clear();
+                                      setState(() {});
+                                    }
+                                  },
                                   fillColor: AppColor.white,
-                                  borderColor:const Color(0xE5D1D9E6),
+                                  borderColor: const Color(0xE5D1D9E6),
                                   suffixIcon: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: SvgPicture.asset(AppSvgs.search),
@@ -142,12 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         return providerIndex.getIndex == 0
                             ? const ProgressManagementScreen()
                             : providerIndex.getIndex == 1
-                                ? UserManagementScreen()
+                                ? const UserManagementScreen()
                                 : providerIndex.getIndex == 2
                                     ? CommunityManagementScreen()
-                                    // : providerIndex.getIndex == 3
-                                    //     ? GuestManagementScreen()
-                                    : providerIndex.getIndex == 4
+                                    : providerIndex.getIndex == 3
                                         ? BillingManagementScreen()
                                         : const SettingScreen();
                       }),

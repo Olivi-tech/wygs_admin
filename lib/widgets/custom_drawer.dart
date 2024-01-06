@@ -113,39 +113,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                 ),
                 SizedBox(height: height * 0.015),
-                // InkWell(
-                //   onTap: () {
-                //     screenTransitionProvider.setIndex = 3;
-                //   },
-                //   child: buildCustomContainer(
-                //     height: height * 0.07,
-                //     iconColor: providerIndex.getIndex == 3
-                //         ? AppColor.white
-                //         : AppColor.blue,
-                //     bgColor: providerIndex.getIndex == 3
-                //         ? AppColor.blue
-                //         : AppColor.white,
-                //     textColor: providerIndex.getIndex == 3
-                //         ? AppColor.white
-                //         : AppColor.blue,
-                //     iconPath: AppSvgs.guest,
-                //     text: 'Guest Management',
-                //   ),
-                // ),
-                //  SizedBox(height: height * 0.015),
+    
                 InkWell(
                   onTap: () {
-                    screenTransitionProvider.setIndex = 4;
+                    screenTransitionProvider.setIndex = 3;
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,
-                    iconColor: providerIndex.getIndex == 4
+                    iconColor: providerIndex.getIndex == 3
                         ? AppColor.white
                         : AppColor.blue,
-                    textColor: providerIndex.getIndex == 4
+                    textColor: providerIndex.getIndex == 3
                         ? AppColor.white
                         : AppColor.blue,
-                    bgColor: providerIndex.getIndex == 4
+                    bgColor: providerIndex.getIndex == 3
                         ? AppColor.blue
                         : AppColor.white,
                     iconPath: AppSvgs.bill,
@@ -155,17 +136,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 SizedBox(height: height * 0.015),
                 InkWell(
                   onTap: () {
-                    screenTransitionProvider.setIndex = 5;
+                    screenTransitionProvider.setIndex = 4;
                   },
                   child: buildCustomContainer(
                     height: height * 0.07,
-                    bgColor: providerIndex.getIndex == 5
+                    bgColor: providerIndex.getIndex == 4
                         ? AppColor.blue
                         : AppColor.white,
-                    iconColor: providerIndex.getIndex == 5
+                    iconColor: providerIndex.getIndex == 4
                         ? AppColor.white
                         : AppColor.blue,
-                    textColor: providerIndex.getIndex == 5
+                    textColor: providerIndex.getIndex == 4
                         ? AppColor.white
                         : AppColor.blue,
                     iconPath: AppSvgs.settings,

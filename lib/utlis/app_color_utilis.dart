@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guitar_songs/constants/constants.dart';
 
 class AppColorUtlis {
-     static getNameColor(String name) {
+  static getNameColor(String name) {
     String firstLetter = name.isNotEmpty ? name[0].trim() : "";
     switch (firstLetter) {
       case "A":
@@ -37,29 +37,32 @@ class AppColorUtlis {
         return AppColor.seaGreen;
       case "O":
         return AppColor.blue;
+      case "S":
+        return AppColor.midnightBlue;
+      case "U":
+        return AppColor.lightRed;
       default:
         return AppColor.indigo.withOpacity(0.9);
     }
   }
 
   static getStatusColor(String status) {
-  switch (status) {
-    case 'Pending':
-      return AppColor.purple;
-    case 'Paid':
-      return const Color(0xFF1CD3B2);
-       case 'Active':
-      return AppColor.green;
-    case 'In Progress':
-      return AppColor.blue;
-    case 'Paused':
-     return AppColor.red;
+    switch (status) {
+      case 'Pending':
+        return AppColor.purple;
+      case 'Paid':
+        return const Color(0xFF1CD3B2);
+      case 'Active':
+        return AppColor.green;
+      case 'In Progress':
+        return AppColor.blue;
+      case 'Paused':
+        return AppColor.red;
       case 'Completed':
         return AppColor.green;
-     
-    default:
-      return AppColor.indigo.withOpacity(0.9);
-  }
-}
 
+      default:
+        return AppColor.indigo.withOpacity(0.9);
+    }
+  }
 }

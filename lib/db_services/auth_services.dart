@@ -7,6 +7,10 @@ import 'package:guitar_songs/utlis/utlis.dart';
 import 'dart:developer';
 
 class AuthServices {
+static User? get getCurrentUser{
+   return FirebaseAuth.instance.currentUser;
+}
+
   static Future<bool> login({
     required String email,
     required String password,
@@ -27,8 +31,16 @@ class AuthServices {
         log('Not Login');
         return false;
       }
-    } catch (e) {
-      toastMessage('Error');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        toastMessage('No user found for that email.');
+
+        return false;
+      } else if (e.code == 'wrong-password') {
+        toastMessage('Wrong password provided for that user.');
+
+        return false;
+      }
       return false;
     }
   }
@@ -39,12 +51,12 @@ class AuthServices {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       DocumentReference user = firestore
-          .collection('adminDetails')
-          .doc(FirebaseAuth.instance.currentUser!.uid);
+          .collection('admin_data')
+          .doc(getCurrentUser!.uid);
       Map<String, dynamic> adminData = adminModel.toMap();
-      await user.set(adminData);
+      await user.update(adminData);
     } catch (e) {
-      log('Error storing admin details: ${e.toString()}');
+      log('Error storing admin data: ${e.toString()}');
     }
   }
 
@@ -52,8 +64,8 @@ class AuthServices {
     try {
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await FirebaseFirestore.instance
-              .collection('adminDetails')
-              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('admin_data')
+              .doc(getCurrentUser!.uid)
               .get();
 
       if (documentSnapshot.exists) {
@@ -63,7 +75,7 @@ class AuthServices {
         return null;
       }
     } catch (e) {
-      log('Error fetching admin details: ${e.toString()}');
+      log('Error fetching admin data: ${e.toString()}');
       return null;
     }
   }
@@ -71,8 +83,8 @@ class AuthServices {
   static Future<void> deleteImageUrl() async {
     try {
       await FirebaseFirestore.instance
-          .collection('adminDetails')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('admin_data')
+          .doc(getCurrentUser!.uid)
           .update({
         'image_url': FieldValue.delete(),
       });
@@ -82,32 +94,4 @@ class AuthServices {
     }
   }
 
-  static Future<void> storeAdminData(
-      {required String email, required controller}) async {
-    try {
-      DocumentReference users =
-          FirebaseFirestore.instance.collection('adminData').doc(controller);
-      await users.set({'email': email});
-    } catch (e) {
-      log('Error : ${e.toString()}');
-    }
-  }
-
-  static Future<Map<String, dynamic>> fetchAdminData() async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance.collection('adminData').get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        Map<String, dynamic> mapData = querySnapshot.docs.first.data();
-        return mapData;
-      } else {
-        return {};
-      }
-    } catch (e) {
-      log('Error fetching admin data: $e');
-
-      return {};
-    }
-  }
 }

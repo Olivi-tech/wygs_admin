@@ -23,7 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     emailController = TextEditingController();
     passWordController = TextEditingController();
-    emailController.text = "test@gmail.com";
+    emailController.text = "valid@gmail.com";
     passWordController.text = "123456";
     passwordVisibility = ValueNotifier<bool>(true);
     loading = ValueNotifier<bool>(false);
@@ -170,18 +170,12 @@ class _SignInScreenState extends State<SignInScreen> {
                               onPressed: () async {
                                 if (formField.currentState!.validate()) {
                                   loading.value = true;
-                                  bool loginSuccessful =
-                                      await AuthServices.login(
-                                          email: emailController.text,
-                                          password: passWordController.text,
-                                          context: context);
-                                  loading.value = false;
-                                  if (loginSuccessful) {
-                                    AuthServices.storeAdminData(
+
+                                  await AuthServices.login(
                                       email: emailController.text,
-                                      controller: emailController.text,
-                                    );
-                                  }
+                                      password: passWordController.text,
+                                      context: context);
+                                  loading.value = false;
                                 }
                               },
                               backgroundColor: AppColor.blue,

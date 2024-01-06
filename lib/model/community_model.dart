@@ -1,43 +1,42 @@
 class CommunityModel {
-  String? postBy;
-  String? description;
-  String? date;
-  String? likes;
   String? comments;
-  String? status;
-  String? image;
+  bool? isVideo;
+  String? likes;
+  String? postDate;
+  String? postMessage;
+  String? postUrl;
+  String? postBy;
+  String? userProfileUrl;
+  String? userId;
+  String? postId;
   CommunityModel({
-    this.postBy,
-    this.description,
-    this.date,
-    this.likes,
     this.comments,
-    this.status,
-    this.image,
+    this.isVideo,
+    this.likes,
+    this.postDate,
+    this.postMessage,
+    this.postUrl,
+    this.postBy,
+    this.userProfileUrl,
+    this.userId,
+    this.postId
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'post_by': postBy,
-      'description': description,
-      'date': date,
-      'likes': likes,
-      'comments': comments,
-      'status': status,
-      'image': image,
-    };
-  }
-
-  factory CommunityModel.fromMap(Map<String, dynamic> map) {
+  factory CommunityModel.fromMap(Map<String, dynamic> map,String postId) {
     return CommunityModel(
-      postBy: map['post_by'] != null ? map['post_by'] as String : null,
-      description:
-          map['description'] != null ? map['description'] as String : null,
-      date: map['date'] != null ? map['date'] as String : null,
-      likes: map['likes'] != null ? map['likes'] as String : null,
       comments: map['comments'] != null ? map['comments'] as String : null,
-      status: map['status'] != null ? map['status'] as String : null,
-      image: map['image'] != null ? map['image'] as String : null,
+      isVideo: map['is_video'] != null ? map['is_video'] as bool : null,
+      likes: map['likes'] != null ? map['likes'] as String : null,
+      postDate: map['post_date'] != null ? map['post_date'] as String : null,
+      postMessage:
+          map['post_message'] != null ? map['post_message'] as String : null,
+      postUrl: map['post_url'] != null ? map['post_url'] as String : null,
+      postBy: map['user_name'] != null ? map['user_name'] as String : null,
+      userProfileUrl: map['user_profile_url'] != null
+          ? map['user_profile_url'] as String
+          : null,
+      userId: map['user_uid'] != null ? map['user_uid'] as String : null,
+      postId: postId,
     );
   }
 }

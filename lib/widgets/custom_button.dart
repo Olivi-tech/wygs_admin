@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:guitar_songs/constants/colors.dart';
+
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -39,9 +39,7 @@ class CustomButton extends StatelessWidget {
       ),
       onPressed: onPressed,
       child: isLoading
-          ? const CupertinoActivityIndicator(
-              color: Colors.yellow,
-            )
+          ? const CupertinoActivityIndicator()
           : Text(
               text,
               style: TextStyle(
