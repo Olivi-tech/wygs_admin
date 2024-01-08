@@ -7,6 +7,6 @@ Route onGenerateRoute(RouteSettings setting) {
   if (setting.name == AppRoutes.signin) {
     return MaterialPageRoute(builder: (context) => const SignInScreen());
   } else {
-    return MaterialPageRoute(builder: (context) => const HomeScreen());
+    return MaterialPageRoute(builder: (context) =>  HomeScreen());
   }
 }

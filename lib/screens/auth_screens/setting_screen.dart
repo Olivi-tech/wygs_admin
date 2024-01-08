@@ -41,6 +41,7 @@ class _SettingScreenState extends State<SettingScreen> {
         addressController.text = adminModel.address!;
         phoneController.text = adminModel.phoneNumber!;
         imageUrl = adminModel.imageUrl!;
+     
       } else {
         firstNameController.text = '';
         lastNameController.text = '';
@@ -114,7 +115,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           return SizedBox(
                               child: value.path.isNotEmpty
                                   ? CircleAvatar(
-                                      backgroundImage: NetworkImage(value.path),
+                                      backgroundImage: AssetImage(value.path),
                                     )
                                   : CircleAvatar(
                                       backgroundImage: NetworkImage(imageUrl),
@@ -155,6 +156,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             InkWell(
                                 onTap: () {
                                   AppUtlis.storeImageToFirebase(context);
+                                  
                                 },
                                 child: const CustomText(
                                   text: 'Change',

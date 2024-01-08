@@ -10,6 +10,8 @@ import 'package:guitar_songs/utlis/utlis.dart';
 import 'package:guitar_songs/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../components/components.dart';
+
 // ignore: must_be_immutable
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key, Key? ey});
@@ -21,7 +23,9 @@ class UserManagementScreen extends StatefulWidget {
 class _UserManagementScreenState extends State<UserManagementScreen> {
   List<ProgressModel> getStatus = <ProgressModel>[];
   late UserCheckProvider userCheckProvider;
+  late ValueNotifier<String> searchNotifier;
   Map<String, int> dayValuesMap = {};
+  late TextEditingController controller;
   late int length;
   Stream<List<UserModel>> userModelStream =
       FirestoreServices.fetchUserCollectionData<UserModel>(
@@ -50,6 +54,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   @override
   void initState() {
     super.initState();
+    controller = TextEditingController();
+    searchNotifier = ValueNotifier('');
     fetchProgressData();
     initializeDataLength();
   }
@@ -58,396 +64,449 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final double width = size.width;
+    final double height = size.height;
     userCheckProvider = Provider.of<UserCheckProvider>(context, listen: false);
-    return StreamBuilder(
-        stream: userModelStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-                child: CupertinoActivityIndicator(
-              color: AppColor.blue,
-            ));
-          } else if (snapshot.hasData) {
-            List<UserModel> userData = snapshot.data!;
-            return ScrollConfiguration(
-              behavior:
-                  ScrollConfiguration.of(context).copyWith(scrollbars: false),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 15),
-                              child: CustomContainerWithIconAndText(
-                                icon: AppSvgs.userBold,
-                                value: '${snapshot.data!.length}',
-                                label: 'Total Users',
-                                color: const Color(0xFF605BFF),
-                              ),
-                            ),
-                          ),
-                          const Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 6),
-                              child: CustomContainerWithIconAndText(
-                                icon: AppSvgs.userBold,
-                                value: '4357',
-                                label: 'Active Users',
-                                color: AppColor.orange,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 10.0,
-                              ),
-                              child: CustomContainerWithIconAndText(
-                                icon: AppSvgs.document,
-                                value: '$length',
-                                label: 'Total Community Post',
-                                color: AppColor.green,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 15, left: 25),
-                      child: Text(
-                        'User’s Management',
-                        style: TextStyle(
-                          color: AppColor.blackish,
-                          fontSize: AppSize.large,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, top: 20, bottom: 30),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          border: Border.all(color: AppColor.jetBlack),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(15)),
-                                color: MaterialStateColor.resolveWith(
-                                    (states) =>
-                                        Provider.of<UserCheckProvider>(context)
-                                                    .selectedIndices
-                                                    .length ==
-                                                userData.length
-                                            ? AppColor.paleBlue
-                                            : AppColor.white),
-                              ),
-                              columnSpacing:
-                                  MediaQuery.of(context).size.width * 0.09,
-                              columns: [
-                                DataColumn(
-                                  label: Row(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          userCheckProvider.selectAll(userData);
-                                        },
-                                        child: Consumer<UserCheckProvider>(
-                                          builder: (context, value, child) {
-                                            return Container(
-                                                height: 18,
-                                                width: 18,
-                                                decoration: BoxDecoration(
-                                                    color: value.selectedIndices.length ==
-                                                            userData.length
-                                                        ? AppColor.green
-                                                        : AppColor.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    border: value.selectedIndices.length ==
-                                                            userData.length
-                                                        ? Border.all(
-                                                            color: AppColor.green
-                                                                .withOpacity(
-                                                                    0.7))
-                                                        : Border.all(
-                                                            color: AppColor.black
-                                                                .withOpacity(0.7))),
-                                                child: value.selectedIndices.length == userData.length
-                                                    ? const Icon(
-                                                        Icons.check,
-                                                        size: 14,
-                                                        color: AppColor.white,
-                                                      )
-                                                    : const SizedBox());
-                                          },
-                                        ),
+    return Column(
+      children: [
+        CustomAppBar(
+          controller: controller,
+          setSearchValue: (searchQuery) {
+            searchNotifier.value = searchQuery;
+          },
+        ),
+        SizedBox(height: height * 0.03),
+        Expanded(
+          child: StreamBuilder(
+              stream: userModelStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CupertinoActivityIndicator(
+                    color: AppColor.blue,
+                  ));
+                } else if (snapshot.hasData) {
+                  return SingleChildScrollView(
+                    child: ValueListenableBuilder(
+                      valueListenable: searchNotifier,
+                      builder: (context, query, child) {
+                        List<UserModel> userData = query.isEmpty
+                            ? snapshot.data!
+                            : snapshot.data!
+                                .where((data) => data.name!
+                                    .toLowerCase()
+                                    .contains(query.toLowerCase()))
+                                .toList();
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 20),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 15),
+                                      child: CustomContainerWithIconAndText(
+                                        icon: AppSvgs.userBold,
+                                        value: '${snapshot.data!.length}',
+                                        label: 'Total Users',
+                                        color: const Color(0xFF605BFF),
                                       ),
-                                      const SizedBox(width: 10),
-                                      const CustomTextDataColumn(text: 'Name'),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                                const DataColumn(
-                                  label: CustomTextDataColumn(text: 'Email ID'),
-                                ),
-                                const DataColumn(
-                                  label: Flexible(
-                                    child: CustomTextDataColumn(
-                                        text: 'Joining Date'),
+                                  const Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 6),
+                                      child: CustomContainerWithIconAndText(
+                                        icon: AppSvgs.userBold,
+                                        value: '4357',
+                                        label: 'Active Users',
+                                        color: AppColor.orange,
+                                      ),
+                                    ),
                                   ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 10.0,
+                                      ),
+                                      child: CustomContainerWithIconAndText(
+                                        icon: AppSvgs.document,
+                                        value: '$length',
+                                        label: 'Total Community Post',
+                                        color: AppColor.green,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 15, left: 25),
+                              child: Text(
+                                'User’s Management',
+                                style: TextStyle(
+                                  color: AppColor.blackish,
+                                  fontSize: AppSize.large,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                const DataColumn(
-                                  label:
-                                      CustomTextDataColumn(text: 'Last Login'),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 20, top: 20, bottom: 30),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: AppColor.white,
+                                  border: Border.all(color: AppColor.jetBlack),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                DataColumn(
-                                  label: Row(
-                                    children: [
-                                      const CustomTextDataColumn(
-                                          text: 'Status'),
-                                      SizedBox(width: width * 0.04),
-                                      Consumer<UserCheckProvider>(
-                                        builder: (context, value, child) {
-                                          return value.selectedIndices.length ==
-                                                  userData.length
-                                              ? Container(
-                                                  height: 25,
-                                                  width: 25,
-                                                  decoration: BoxDecoration(
-                                                      color: AppColor.white,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(15)),
+                                        color: MaterialStateColor.resolveWith(
+                                            (states) =>
+                                                Provider.of<UserCheckProvider>(
+                                                                    context)
+                                                                .selectedIndices
+                                                                .length ==
+                                                            userData.length &&
+                                                        userData.isNotEmpty
+                                                    ? AppColor.paleBlue
+                                                    : AppColor.white),
+                                      ),
+                                      columnSpacing:
+                                          MediaQuery.of(context).size.width *
+                                              0.084,
+                                      columns: [
+                                        DataColumn(
+                                          label: Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  userCheckProvider
+                                                      .selectAll(userData);
+                                                },
+                                                child:
+                                                    Consumer<UserCheckProvider>(
+                                                  builder:
+                                                      (context, value, child) {
+                                                    return Container(
+                                                        height: 18,
+                                                        width: 18,
+                                                        decoration: BoxDecoration(
+                                                            color: value.selectedIndices.length == userData.length &&
+                                                                    userData
+                                                                        .isNotEmpty
+                                                                ? AppColor.green
+                                                                : AppColor
+                                                                    .white,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    5),
+                                                            border: value.selectedIndices
+                                                                            .length ==
+                                                                        userData
+                                                                            .length &&
+                                                                    userData
+                                                                        .isNotEmpty
+                                                                ? Border.all(
+                                                                    color: AppColor
+                                                                        .green
+                                                                        .withOpacity(0.7))
+                                                                : Border.all(color: AppColor.black.withOpacity(0.7))),
+                                                        child: value.selectedIndices.length == userData.length && userData.isNotEmpty
+                                                            ? const Icon(
+                                                                Icons.check,
+                                                                size: 14,
+                                                                color: AppColor
+                                                                    .white,
+                                                              )
+                                                            : const SizedBox());
+                                                  },
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              const CustomTextDataColumn(
+                                                  text: 'Name'),
+                                            ],
+                                          ),
+                                        ),
+                                        const DataColumn(
+                                          label: CustomTextDataColumn(
+                                              text: 'Email ID'),
+                                        ),
+                                        const DataColumn(
+                                          label: Flexible(
+                                            child: CustomTextDataColumn(
+                                                text: 'Joining Date'),
+                                          ),
+                                        ),
+                                        const DataColumn(
+                                          label: CustomTextDataColumn(
+                                              text: 'Last Login'),
+                                        ),
+                                        DataColumn(
+                                          label: Row(
+                                            children: [
+                                              const CustomTextDataColumn(
+                                                  text: 'Status'),
+                                              SizedBox(width: width * 0.04),
+                                              Consumer<UserCheckProvider>(
+                                                builder:
+                                                    (context, value, child) {
+                                                  return value.selectedIndices
+                                                                  .length ==
+                                                              userData.length &&
+                                                          userData.isNotEmpty
+                                                      ? Container(
+                                                          height: 25,
+                                                          width: 25,
+                                                          decoration: BoxDecoration(
+                                                              color: AppColor
+                                                                  .white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5)),
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              deleteDialog(
+                                                                  context,
+                                                                  'user_data');
+                                                            },
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(3.0),
+                                                              child: SvgPicture
+                                                                  .asset(AppSvgs
+                                                                      .delete),
+                                                            ),
+                                                          ))
+                                                      : const SizedBox();
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                      rows: userData.asMap().entries.map(
+                                          (MapEntry<int, UserModel> entry) {
+                                        final int index = entry.key;
+                                        final UserModel model = entry.value;
+
+                                        return DataRow(
+                                          color: MaterialStateColor.resolveWith(
+                                            (states) {
+                                              return Provider.of<
+                                                              UserCheckProvider>(
+                                                          context)
+                                                      .isSelected(index)
+                                                  ? AppColor.paleBlue
+                                                  : AppColor.white;
+                                            },
+                                          ),
+                                          cells: [
+                                            DataCell(
+                                              Row(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      userCheckProvider
+                                                          .toggleChecked(index);
+                                                    },
+                                                    child: Consumer<
+                                                        UserCheckProvider>(
+                                                      builder: (context,
+                                                              provider,
+                                                              child) =>
+                                                          Container(
+                                                        height: 18,
+                                                        width: 18,
+                                                        decoration: BoxDecoration(
+                                                            color: provider.isSelected(index)
+                                                                ? AppColor.green
+                                                                : AppColor
+                                                                    .white,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    5),
+                                                            border: provider
+                                                                    .isSelected(
+                                                                        index)
+                                                                ? Border.all(
+                                                                    color: AppColor
+                                                                        .green
+                                                                        .withOpacity(
+                                                                            0.7))
+                                                                : Border.all(
+                                                                    color: AppColor
+                                                                        .black
+                                                                        .withOpacity(0.7))),
+                                                        child:
+                                                            provider.isSelected(
+                                                                    index)
+                                                                ? const Icon(
+                                                                    Icons.check,
+                                                                    size: 14,
+                                                                    color: AppColor
+                                                                        .white,
+                                                                  )
+                                                                : null,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: AppColorUtlis
+                                                          .getNameColor(
+                                                              model.name ?? ''),
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              5)),
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      deleteDialog(
-                                                          context, 'user_data');
-                                                    },
+                                                              36),
+                                                    ),
+                                                    height: 25,
+                                                    width: 25,
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
                                                               3.0),
                                                       child: SvgPicture.asset(
-                                                          AppSvgs.delete),
+                                                          AppSvgs.userBold),
                                                     ),
-                                                  ))
-                                              : const SizedBox();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                              rows: userData
-                                  .asMap()
-                                  .entries
-                                  .map((MapEntry<int, UserModel> entry) {
-                                final int index = entry.key;
-                                final UserModel model = entry.value;
-
-                                return DataRow(
-                                  color: MaterialStateColor.resolveWith(
-                                    (states) {
-                                      return Provider.of<UserCheckProvider>(
-                                                  context)
-                                              .isSelected(index)
-                                          ? AppColor.paleBlue
-                                          : AppColor.white;
-                                    },
-                                  ),
-                                  cells: [
-                                    DataCell(
-                                      Row(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              userCheckProvider
-                                                  .toggleChecked(index);
-                                            },
-                                            child: Consumer<UserCheckProvider>(
-                                              builder:
-                                                  (context, provider, child) =>
-                                                      Container(
-                                                height: 18,
-                                                width: 18,
-                                                decoration: BoxDecoration(
-                                                    color: provider
-                                                            .isSelected(index)
-                                                        ? AppColor.green
-                                                        : AppColor.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    border: provider
-                                                            .isSelected(index)
-                                                        ? Border.all(
-                                                            color: AppColor.green
-                                                                .withOpacity(
-                                                                    0.7))
-                                                        : Border.all(
-                                                            color: AppColor
-                                                                .black
-                                                                .withOpacity(
-                                                                    0.7))),
-                                                child: provider
-                                                        .isSelected(index)
-                                                    ? const Icon(
-                                                        Icons.check,
-                                                        size: 14,
-                                                        color: AppColor.white,
-                                                      )
-                                                    : null,
+                                                  ),
+                                                  const SizedBox(width: 5),
+                                                  Flexible(
+                                                    child: CustomTextDataRow(
+                                                      text: "${model.name}",
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColorUtlis.getNameColor(
-                                                  model.name ?? ''),
-                                              borderRadius:
-                                                  BorderRadius.circular(36),
+                                            DataCell(
+                                              CustomTextDataRow(
+                                                  text: "${model.email}"),
                                             ),
-                                            height: 25,
-                                            width: 25,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(3.0),
-                                              child: SvgPicture.asset(
-                                                  AppSvgs.userBold),
+                                            DataCell(
+                                              CustomTextDataRow(
+                                                  text: "${model.joiningDate}"),
                                             ),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          Flexible(
-                                            child: CustomTextDataRow(
-                                              text: "${model.name}",
+                                            DataCell(
+                                              CustomTextDataRow(
+                                                  text: "${model.lastLogin}"),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    DataCell(
-                                      CustomTextDataRow(text: "${model.email}"),
-                                    ),
-                                    DataCell(
-                                      CustomTextDataRow(
-                                          text: "${model.joiningDate}"),
-                                    ),
-                                    DataCell(
-                                      CustomTextDataRow(
-                                          text: "${model.lastLogin}"),
-                                    ),
-                                    DataCell(
-                                      Row(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  AppColorUtlis.getStatusColor(
-                                                      (dayValuesMap[model
-                                                                      .userId] ??
-                                                                  0) >=
-                                                              7
-                                                          ? 'Completed'
-                                                          : 'In Progress'),
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                            DataCell(
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: AppColorUtlis
+                                                          .getStatusColor(
+                                                              (dayValuesMap[model
+                                                                              .userId] ??
+                                                                          0) >=
+                                                                      7
+                                                                  ? 'Completed'
+                                                                  : 'In Progress'),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                    ),
+                                                    height: 23,
+                                                    width: 77,
+                                                    child: Center(
+                                                      child: CustomTextDataRow(
+                                                          text: (dayValuesMap[model
+                                                                          .userId] ??
+                                                                      0) >=
+                                                                  7
+                                                              ? 'Completed'
+                                                              : 'In Progress'),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: Consumer<
+                                                        UserCheckProvider>(
+                                                      builder: (context, value,
+                                                          child) {
+                                                        return value.selectedIndices
+                                                                    .length ==
+                                                                userData.length
+                                                            ? const SizedBox()
+                                                            : GestureDetector(
+                                                                onTap: () {
+                                                                  userCheckProvider
+                                                                      .toggleChecked(
+                                                                          index);
+                                                                },
+                                                                child: value
+                                                                        .isSelected(
+                                                                            index)
+                                                                    ? Container(
+                                                                        height:
+                                                                            25,
+                                                                        width:
+                                                                            25,
+                                                                        decoration: BoxDecoration(
+                                                                            color:
+                                                                                AppColor.white,
+                                                                            borderRadius: BorderRadius.circular(5)),
+                                                                        child:
+                                                                            GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            deleteDocumentDialog(
+                                                                                context,
+                                                                                model.userId!,
+                                                                                'user_data');
+                                                                          },
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(3.0),
+                                                                            child:
+                                                                                SvgPicture.asset(AppSvgs.delete),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    : const SizedBox(),
+                                                              );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            height: 23,
-                                            width: 77,
-                                            child: Center(
-                                              child: CustomTextDataRow(
-                                                  text: (dayValuesMap[model
-                                                                  .userId] ??
-                                                              0) >=
-                                                          7
-                                                      ? 'Completed'
-                                                      : 'In Progress'),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
-                                            child: Consumer<UserCheckProvider>(
-                                              builder: (context, value, child) {
-                                                return value.selectedIndices
-                                                            .length ==
-                                                        userData.length
-                                                    ? const SizedBox()
-                                                    : GestureDetector(
-                                                        onTap: () {
-                                                          userCheckProvider
-                                                              .toggleChecked(
-                                                                  index);
-                                                        },
-                                                        child: value.isSelected(
-                                                                index)
-                                                            ? Container(
-                                                                height: 25,
-                                                                width: 25,
-                                                                decoration: BoxDecoration(
-                                                                    color: AppColor
-                                                                        .white,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            5)),
-                                                                child:
-                                                                    GestureDetector(
-                                                                  onTap: () {
-                                                                    deleteDocumentDialog(
-                                                                        context,
-                                                                        model
-                                                                            .userId!,
-                                                                        'user_data');
-                                                                  },
-                                                                  child:
-                                                                      Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            3.0),
-                                                                    child: SvgPicture
-                                                                        .asset(AppSvgs
-                                                                            .delete),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            : const SizedBox(),
-                                                      );
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }).toList()),
-                        ),
-                      ),
+                                          ],
+                                        );
+                                      }).toList()),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  ],
-                ),
-              ),
-            );
-          } else {
-            return const Text('');
-          }
-        });
+                  );
+                } else {
+                  return const Text('');
+                }
+              }),
+        ),
+      ],
+    );
   }
 }
 

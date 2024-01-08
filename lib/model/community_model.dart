@@ -1,7 +1,7 @@
 class CommunityModel {
-  String? comments;
+  num? comments;
   bool? isVideo;
-  String? likes;
+  num? likes;
   String? postDate;
   String? postMessage;
   String? postUrl;
@@ -24,9 +24,9 @@ class CommunityModel {
 
   factory CommunityModel.fromMap(Map<String, dynamic> map,String postId) {
     return CommunityModel(
-      comments: map['comments'] != null ? map['comments'] as String : null,
+      comments: map['comments'] != null ? map['comments'] as num : null,
       isVideo: map['is_video'] != null ? map['is_video'] as bool : null,
-      likes: map['likes'] != null ? map['likes'] as String : null,
+      likes: map['likes'] != null ? map['likes'] as num : null,
       postDate: map['post_date'] != null ? map['post_date'] as String : null,
       postMessage:
           map['post_message'] != null ? map['post_message'] as String : null,

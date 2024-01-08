@@ -24,6 +24,7 @@ class AppUtlis {
       return null;
     }
   }
+  
 
   static Future<Uint8List> storeImageToFirebase(BuildContext context) async {
     final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
